@@ -11,10 +11,17 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"test": "playwright test",
+		"test:ui": "playwright test --ui",
+		"test:headed": "playwright test --headed",
+		"test:stress": "playwright test -c playwright.stress.config.ts",
+		"test:load": "node scripts/load-stress.mjs",
+		"test:load:heavy": "CONCURRENCY=80 DURATION_MS=45000 node scripts/load-stress.mjs"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
+		"@playwright/test": "^1.62.1",
 		"@sveltejs/adapter-auto": "^7.0.1",
 		"@sveltejs/kit": "^2.63.0",
 		"@sveltejs/vite-plugin-svelte": "^7.1.2",

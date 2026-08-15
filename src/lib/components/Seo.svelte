@@ -1,9 +1,20 @@
 <script lang="ts">
-	let { title, description }: { title: string; description?: string } = $props();
+	let {
+		title,
+		description,
+		noindex = false
+	}: {
+		title: string;
+		description?: string;
+		noindex?: boolean;
+	} = $props();
 </script>
 
 <svelte:head>
 	<title>{title}</title>
+	{#if noindex}
+		<meta name="robots" content="noindex, nofollow" />
+	{/if}
 	{#if description}
 		<meta name="description" content={description} />
 		<meta property="og:description" content={description} />

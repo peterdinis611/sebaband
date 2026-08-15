@@ -6,7 +6,7 @@
 
 	$effect(() => {
 		const onScroll = () => {
-			visible = window.scrollY > 280;
+			visible = window.scrollY > 200;
 		};
 		onScroll();
 		window.addEventListener('scroll', onScroll, { passive: true });

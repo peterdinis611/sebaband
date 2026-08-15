@@ -17,6 +17,7 @@
 
 	function labelFor(pathname: string) {
 		if (pathname === '/') return 'Domov';
+		if (pathname.startsWith('/analytics')) return 'Analytics';
 		const item = nav.find((n) => n.href !== '/' && pathname.startsWith(n.href));
 		if (item) return item.label;
 		if (pathname.startsWith('/rezervacne-podmienky')) return 'Podmienky';

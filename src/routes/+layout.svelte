@@ -9,6 +9,7 @@
 	import Preloader from '$lib/components/Preloader.svelte';
 	import ScrollTop from '$lib/components/ScrollTop.svelte';
 	import Icon from '$lib/components/Icon.svelte';
+	import { bindClickTracking, trackHit } from '$lib/analytics.svelte';
 	import { site } from '$lib/data/site';
 	import { bindPunches, bindScrollIns } from '$lib/motion';
 	import { hydrateTheme } from '$lib/theme.svelte';
@@ -21,8 +22,14 @@
 	});
 
 	afterNavigate((navigation) => {
+		const path = navigation.to?.url.pathname;
+		if (path) trackHit(path);
 		if (navigation.to?.url.hash) return;
 		window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+	});
+
+	$effect(() => {
+		return bindClickTracking(() => page.url.pathname);
 	});
 
 	$effect(() => {

@@ -551,13 +551,13 @@ html.is-booting {
 
 .scroll-top {
 	position: fixed;
-	left: 1rem;
+	left: max(1rem, env(safe-area-inset-left, 0px));
 	right: auto;
 	bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
-	z-index: 100;
+	z-index: 110;
 	display: grid;
-	width: 3.25rem;
-	height: 3.25rem;
+	width: 3.4rem;
+	height: 3.4rem;
 	place-items: center;
 	border: 2px solid var(--color-ink);
 	background: var(--color-paprika);
@@ -594,8 +594,8 @@ html.is-booting {
 
 @media (min-width: 768px) {
 	.scroll-top {
-		left: auto;
-		right: 1.5rem;
+		left: 1.5rem;
+		right: auto;
 		bottom: 1.5rem;
 	}
 }

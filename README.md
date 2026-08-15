@@ -23,6 +23,10 @@ Dev server: [http://localhost:5173](http://localhost:5173)
 | `npm run check` | TypeScript + Svelte kontrola |
 | `npm run lint` | ESLint + Prettier |
 | `npm run format` | Formátovanie kódu |
+| `npm test` | Playwright E2E |
+| `npm run test:ui` | Playwright UI režim |
+| `npm run test:stress` | UI stress (rýchla navigácia, lightbox, téma…) |
+| `npm run test:load` | HTTP load stress (preview musí bežať) |
 
 ## Štruktúra
 
@@ -45,8 +49,38 @@ static/images/    # Fotografie (WebP + JPEG)
 | `/galeria` | Fotogaléria |
 | `/videa` | YouTube videá |
 | `/rezervacie` | Kalendár termínov |
-| `/kontakt` | Kontakt + dopyt |
+| `/kontakt` | Kontakt |
 | `/rezervacne-podmienky` | Podmienky rezervácie |
+| `/analytics` | Interný prehľad (nie je v menu) |
+
+## Testy (Playwright)
+
+```bash
+npx playwright install chromium   # raz
+npm test
+```
+
+| Príkaz | Popis |
+| --- | --- |
+| `npm test` | E2E testy (build + preview) |
+| `npm run test:ui` | Playwright UI |
+| `npm run test:headed` | Testy v otvorenom prehliadači |
+| `npm run test:stress` | UI stress suite |
+| `npm run test:load` | HTTP load stress |
+
+Špecifikácie sú v `e2e/` — stránky, navigácia, kontakt bez dopytu, rezervácie, galéria/lightbox, téma.
+
+### Stress
+
+```bash
+npm run test:stress          # agresívne UI scenáre (e2e/stress)
+npm run build && npm run preview -- --host 127.0.0.1 --port 4173
+# v druhom termináli:
+npm run test:load            # HTTP load (40 klientov, 20s)
+npm run test:load:heavy      # 80 klientov, 45s
+```
+
+Env pre load: `BASE_URL`, `CONCURRENCY`, `DURATION_MS`.
 
 ## Dizajn
 
