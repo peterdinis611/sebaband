@@ -51,6 +51,8 @@ function writeHits(rows: HitRow[]) {
 export function trackHit(pathname: string) {
 	if (typeof localStorage === 'undefined') return;
 	if (pathname.startsWith('/analytics')) return;
+	if (typeof location !== 'undefined' && new URLSearchParams(location.search).get('preview') === '1')
+		return;
 
 	const rows = readHits();
 	const now = new Date().toISOString();
@@ -104,6 +106,8 @@ function clickLabel(el: Element): string {
 export function trackClick(pathname: string, event: MouseEvent) {
 	if (typeof localStorage === 'undefined') return;
 	if (pathname.startsWith('/analytics')) return;
+	if (typeof location !== 'undefined' && new URLSearchParams(location.search).get('preview') === '1')
+		return;
 
 	const target = event.target;
 	if (!(target instanceof Element)) return;

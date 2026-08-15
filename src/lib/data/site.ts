@@ -1,6 +1,8 @@
 export const site = {
 	name: 'SEBA BAND',
 	shortName: 'SB',
+	/** Canonical site origin — update when production domain is final. */
+	url: 'https://sebaband.sk',
 	tagline: 'Hudba, ktorá spája rodinu aj ľudí',
 	kicker: 'Rómska live kapela',
 	description:

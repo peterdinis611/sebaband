@@ -3,11 +3,13 @@
 	import PageHero from '$lib/components/PageHero.svelte';
 	import Seo from '$lib/components/Seo.svelte';
 	import { gallery } from '$lib/data/gallery';
+	import { pages } from '$lib/data/seo';
 </script>
 
 <Seo
-	title="Galéria — SEBA BAND | Fotografie z vystúpení"
-	description="Fotogaléria SEBA BAND zo svadieb, plesov, zábav a festivalov na Slovensku aj v zahraničí."
+	title={pages.gallery.title}
+	description={pages.gallery.description}
+	keywords={pages.gallery.keywords}
 />
 
 <PageHero

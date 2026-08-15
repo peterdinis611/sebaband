@@ -14,9 +14,25 @@
 					document.documentElement.setAttribute('data-theme', t);
 					document.documentElement.style.colorScheme = t;
 					if (t === 'dark') {
-						document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0c0b0a');
+						document.querySelector('meta[name="theme-color"]').setAttribute('content', '#100e0c');
 					}
-					document.documentElement.classList.add('is-booting');
+					var path = location.pathname || '';
+					var q = location.search || '';
+					var isAnalytics = path.indexOf('/analytics') === 0;
+					var isPreview = q.indexOf('preview=1') !== -1;
+					var skipBoot =
+						isAnalytics ||
+						isPreview ||
+						sessionStorage.getItem('seba-booted') === '1' ||
+						window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+					if (isAnalytics) {
+						document.documentElement.classList.add('is-analytics');
+					}
+					if (skipBoot) {
+						document.documentElement.classList.add('boot-skip');
+					} else {
+						document.documentElement.classList.add('is-booting');
+					}
 				} catch (e) {}
 			})();
 		</script>
@@ -31,8 +47,31 @@
 			rel="stylesheet"
 			href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&display=swap"
 		/>
-		<link rel="preload" as="image" href="/images/hero-band.webp" type="image/webp" fetchpriority="high" />
-		<link rel="preload" as="image" href="/images/logo.webp" type="image/webp" />
+		<script>
+			(function () {
+				try {
+					var path = location.pathname || '';
+					var q = location.search || '';
+					var light =
+						path.indexOf('/analytics') === 0 || q.indexOf('preview=1') !== -1;
+					if (!light) {
+						var l1 = document.createElement('link');
+						l1.rel = 'preload';
+						l1.as = 'image';
+						l1.href = '/images/hero-band.webp';
+						l1.type = 'image/webp';
+						l1.fetchPriority = 'high';
+						document.head.appendChild(l1);
+						var l2 = document.createElement('link');
+						l2.rel = 'preload';
+						l2.as = 'image';
+						l2.href = '/images/logo.webp';
+						l2.type = 'image/webp';
+						document.head.appendChild(l2);
+					}
+				} catch (e) {}
+			})();
+		</script>
 		<style>
 			/* Keep first paint filled — Impact until webfonts arrive */
 			.display,
@@ -119,6 +158,9 @@
 			html.is-booting {
 				overflow: hidden;
 			}
+			html.boot-skip #boot {
+				display: none !important;
+			}
 			@media (prefers-reduced-motion: reduce) {
 				#boot {
 					display: none !important;
@@ -145,6 +187,14 @@
 			</div>
 			<span class="boot-stamp js-boot-stamp">Live</span>
 		</div>
+		<script>
+			(function () {
+				if (document.documentElement.classList.contains('boot-skip')) {
+					var b = document.getElementById('boot');
+					if (b) b.remove();
+				}
+			})();
+		</script>
 		<noscript><style>#boot{display:none!important}html.is-booting{overflow:auto}</style></noscript>
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>

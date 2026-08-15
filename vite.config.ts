@@ -18,5 +18,13 @@ export default defineConfig({
 			// See https://svelte.dev/docs/kit/adapters for more information about adapters.
 			adapter: adapter()
 		})
-	]
+	],
+	ssr: {
+		// @lucide/svelte ships .js that re-exports .svelte — must be bundled for Node SSR
+		noExternal: ['@lucide/svelte']
+	},
+	optimizeDeps: {
+		// Prebundling treats compiled icon .svelte as JS and blows up on new.target
+		exclude: ['@lucide/svelte']
+	}
 });

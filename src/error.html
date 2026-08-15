@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="sk">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="theme-color" content="#f3ead8" />
+		<meta name="robots" content="noindex" />
+		<title>%sveltekit.status% — SEBA BAND</title>
+		<style>
+			:root {
+				color-scheme: light dark;
+				--paper: #f3ead8;
+				--cream: #fff8ec;
+				--ink: #17120e;
+				--ink-soft: #3a322a;
+				--paprika: #e23a1b;
+				--punch: #17120e;
+				--dust: #8a7b66;
+				--foam: #fff8ec;
+			}
+
+			@media (prefers-color-scheme: dark) {
+				:root {
+					--paper: #100e0c;
+					--cream: #241e18;
+					--ink: #f5ebda;
+					--ink-soft: #c9b9a3;
+					--paprika: #ff6a45;
+					--punch: #ff5c3a;
+					--dust: #a3927c;
+					--foam: #fff8ec;
+				}
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+
+			html,
+			body {
+				margin: 0;
+				min-height: 100%;
+			}
+
+			body {
+				display: grid;
+				place-items: center;
+				padding: 1.5rem;
+				background-color: var(--paper);
+				background-image:
+					radial-gradient(ellipse at 12% -10%, rgba(226, 58, 27, 0.12), transparent 42%),
+					radial-gradient(ellipse at 110% 20%, rgba(28, 58, 48, 0.1), transparent 40%);
+				color: var(--ink);
+				font-family: Georgia, 'Times New Roman', serif;
+				line-height: 1.5;
+			}
+
+			.card {
+				width: min(36rem, 100%);
+				border: 2px solid var(--ink);
+				background: var(--cream);
+				padding: 1.75rem 1.5rem 1.5rem;
+				box-shadow: 10px 10px 0 var(--punch);
+			}
+
+			.kicker {
+				margin: 0;
+				font-family: Impact, Haettenschweiler, sans-serif;
+				font-size: 0.95rem;
+				font-weight: 800;
+				letter-spacing: 0.18em;
+				text-transform: uppercase;
+				color: var(--paprika);
+			}
+
+			h1 {
+				margin: 0.75rem 0 0;
+				font-family: Impact, Haettenschweiler, sans-serif;
+				font-size: clamp(3.5rem, 14vw, 5.5rem);
+				font-weight: 900;
+				letter-spacing: -0.045em;
+				line-height: 0.86;
+				text-transform: uppercase;
+			}
+
+			.lede {
+				margin: 1rem 0 0;
+				color: var(--ink-soft);
+				font-weight: 300;
+			}
+
+			.msg {
+				margin: 1rem 0 0;
+				padding-top: 1rem;
+				border-top: 2px dashed color-mix(in srgb, var(--ink) 25%, transparent);
+				color: var(--dust);
+				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+				font-size: 0.75rem;
+				word-break: break-word;
+			}
+
+			.actions {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.65rem;
+				margin-top: 1.5rem;
+			}
+
+			a {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				padding: 0.85rem 1.25rem;
+				font-family: Impact, Haettenschweiler, sans-serif;
+				font-size: 1rem;
+				font-weight: 800;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				text-decoration: none;
+			}
+
+			.hot {
+				background: var(--paprika);
+				color: var(--foam);
+				box-shadow: 4px 4px 0 #0a0806;
+			}
+
+			.ink {
+				border: 2px solid var(--ink);
+				color: var(--ink);
+				background: transparent;
+			}
+		</style>
+		<script>
+			(function () {
+				try {
+					var t = localStorage.getItem('seba-theme');
+					if (t !== 'light' && t !== 'dark') {
+						t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+					}
+					document.documentElement.setAttribute('data-theme', t);
+					document.documentElement.style.colorScheme = t;
+					if (t === 'dark') {
+						document.documentElement.style.setProperty('--paper', '#100e0c');
+						document.documentElement.style.setProperty('--cream', '#241e18');
+						document.documentElement.style.setProperty('--ink', '#f5ebda');
+						document.documentElement.style.setProperty('--ink-soft', '#c9b9a3');
+						document.documentElement.style.setProperty('--paprika', '#ff6a45');
+						document.documentElement.style.setProperty('--punch', '#ff5c3a');
+						document.documentElement.style.setProperty('--dust', '#a3927c');
+						document.querySelector('meta[name="theme-color"]').setAttribute('content', '#100e0c');
+					}
+				} catch (e) {}
+			})();
+		</script>
+	</head>
+	<body>
+		<main class="card">
+			<p class="kicker">%sveltekit.status%</p>
+			<h1>Výpadok</h1>
+			<p class="lede">
+				Niečo sa pokazilo skôr, než sa stránka stihla načítať. Skúste obnoviť, alebo choďte na úvod.
+			</p>
+			<p class="msg">%sveltekit.error.message%</p>
+			<div class="actions">
+				<a class="hot" href="/">Domov</a>
+				<a class="ink" href="/kontakt">Kontakt</a>
+			</div>
+		</main>
+	</body>
+</html>

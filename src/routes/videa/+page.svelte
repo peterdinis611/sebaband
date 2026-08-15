@@ -2,13 +2,11 @@
 	import PageHero from '$lib/components/PageHero.svelte';
 	import Seo from '$lib/components/Seo.svelte';
 	import VideoGrid from '$lib/components/VideoGrid.svelte';
+	import { pages } from '$lib/data/seo';
 	import { site } from '$lib/data/site';
 </script>
 
-<Seo
-	title="Videá — SEBA BAND | Ukážky naživo"
-	description="Videoukážky SEBA BAND zo štúdia aj z vystúpení. Pozrite si našu živú hudbu v akcii."
-/>
+<Seo title={pages.videos.title} description={pages.videos.description} keywords={pages.videos.keywords} />
 
 <PageHero
 	kicker="Videá"

@@ -11,13 +11,15 @@
 	let {
 		paths = []
 	}: {
-		/** Preferred path options (nav + extras); merged with recorded paths. */
 		paths?: string[];
 	} = $props();
 
+	const STAGE_H = 420;
+	const MAX_DOTS = 200;
+
 	let samples = $state<ClickSample[]>([]);
 	let selected = $state('/');
-	let mode = $state<'page' | 'viewport'>('page');
+	let mode = $state<'page' | 'viewport'>('viewport');
 	let canvas = $state<HTMLCanvasElement>();
 
 	const pathOptions = $derived.by(() => {
@@ -27,13 +29,12 @@
 
 	const filtered = $derived(clicksForPath(selected, samples));
 	const tops = $derived(topClickTargets(filtered));
+	const paintClicks = $derived(
+		filtered.length > MAX_DOTS ? filtered.slice(-MAX_DOTS) : filtered
+	);
 
 	function refresh() {
 		samples = getClicks();
-		const options = clickPaths(samples);
-		if (!options.some(([p]) => p === selected) && options[0]) {
-			selected = options[0][0];
-		}
 	}
 
 	function wipe() {
@@ -47,46 +48,53 @@
 		const ctx = el.getContext('2d');
 		if (!ctx) return;
 
-		const dpr = Math.min(window.devicePixelRatio || 1, 2);
-		const cssW = el.clientWidth || 640;
-		const cssH = el.clientHeight || 420;
-		el.width = Math.floor(cssW * dpr);
-		el.height = Math.floor(cssH * dpr);
+		const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+		const cssW = Math.max(el.clientWidth || 640, 1);
+		const cssH = STAGE_H;
+		const w = Math.floor(cssW * dpr);
+		const h = Math.floor(cssH * dpr);
+		if (el.width !== w || el.height !== h) {
+			el.width = w;
+			el.height = h;
+		}
 		ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 		ctx.clearRect(0, 0, cssW, cssH);
 
-		// Paper grid
-		ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--cream').trim() || '#fff8ec';
+		ctx.fillStyle = '#f3ead8';
 		ctx.fillRect(0, 0, cssW, cssH);
-		ctx.strokeStyle = 'rgba(23,18,14,0.08)';
-		ctx.lineWidth = 1;
-		for (let x = 0; x < cssW; x += 24) {
+		ctx.strokeStyle = 'rgba(23, 18, 14, 0.1)';
+		for (let x = 0; x <= cssW; x += 28) {
 			ctx.beginPath();
 			ctx.moveTo(x, 0);
 			ctx.lineTo(x, cssH);
 			ctx.stroke();
 		}
-		for (let y = 0; y < cssH; y += 24) {
+		for (let y = 0; y <= cssH; y += 28) {
 			ctx.beginPath();
 			ctx.moveTo(0, y);
 			ctx.lineTo(cssW, y);
 			ctx.stroke();
 		}
 
-		if (!filtered.length) {
-			ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--dust').trim() || '#8a7b66';
-			ctx.font = '600 16px Fraunces, Georgia, serif';
-			ctx.fillText('Zatiaľ žiadne kliky na tejto ceste.', 24, 40);
+		if (!paintClicks.length) {
+			ctx.fillStyle = 'rgba(255, 248, 236, 0.95)';
+			ctx.fillRect(16, 16, Math.min(cssW - 32, 360), 48);
+			ctx.strokeStyle = '#17120e';
+			ctx.lineWidth = 2;
+			ctx.strokeRect(16, 16, Math.min(cssW - 32, 360), 48);
+			ctx.fillStyle = '#17120e';
+			ctx.font = '700 14px "Big Shoulders Display", Impact, sans-serif';
+			ctx.fillText('Zatiaľ žiadne kliky — prejdi web a vráť sa.', 28, 46);
 			return;
 		}
 
-		ctx.globalCompositeOperation = 'lighter';
-		for (const click of filtered) {
+		ctx.globalCompositeOperation = 'screen';
+		for (const click of paintClicks) {
 			const x = ((mode === 'page' ? click.xPct : click.vxPct) / 100) * cssW;
 			const y = ((mode === 'page' ? click.yPct : click.vyPct) / 100) * cssH;
 			const g = ctx.createRadialGradient(x, y, 0, x, y, 28);
-			g.addColorStop(0, 'rgba(226, 58, 27, 0.55)');
-			g.addColorStop(0.45, 'rgba(255, 92, 58, 0.22)');
+			g.addColorStop(0, 'rgba(255, 106, 69, 0.85)');
+			g.addColorStop(0.4, 'rgba(226, 58, 27, 0.4)');
 			g.addColorStop(1, 'rgba(226, 58, 27, 0)');
 			ctx.fillStyle = g;
 			ctx.beginPath();
@@ -95,13 +103,16 @@
 		}
 
 		ctx.globalCompositeOperation = 'source-over';
-		for (const click of filtered) {
+		for (const click of paintClicks) {
 			const x = ((mode === 'page' ? click.xPct : click.vxPct) / 100) * cssW;
 			const y = ((mode === 'page' ? click.yPct : click.vyPct) / 100) * cssH;
-			ctx.fillStyle = '#17120e';
 			ctx.beginPath();
-			ctx.arc(x, y, 2.2, 0, Math.PI * 2);
+			ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+			ctx.fillStyle = '#fff8ec';
 			ctx.fill();
+			ctx.lineWidth = 1.25;
+			ctx.strokeStyle = '#17120e';
+			ctx.stroke();
 		}
 	}
 
@@ -110,10 +121,12 @@
 	});
 
 	$effect(() => {
-		void filtered;
+		void paintClicks;
 		void mode;
 		void selected;
-		requestAnimationFrame(paint);
+		void canvas;
+		const id = requestAnimationFrame(paint);
+		return () => cancelAnimationFrame(id);
 	});
 
 	$effect(() => {
@@ -134,11 +147,11 @@
 			</select>
 		</label>
 		<div class="heat-modes" role="group" aria-label="Režim mapy">
-			<button type="button" class:is-on={mode === 'page'} onclick={() => (mode = 'page')}>
-				Celá stránka
-			</button>
 			<button type="button" class:is-on={mode === 'viewport'} onclick={() => (mode = 'viewport')}>
 				Viewport
+			</button>
+			<button type="button" class:is-on={mode === 'page'} onclick={() => (mode = 'page')}>
+				Celá stránka
 			</button>
 		</div>
 		<button type="button" class="btn-ink !py-2" onclick={wipe}>Vymazať kliky</button>
@@ -147,11 +160,18 @@
 	<p class="heat-meta">
 		<strong class="text-paprika">{filtered.length}</strong> klikov na
 		<code>{selected}</code>
-		· heatmapa v štýle Clarity (iba tento prehliadač)
+		{#if filtered.length > MAX_DOTS}
+			· mapujem posledných {MAX_DOTS}
+		{/if}
 	</p>
 
-	<div class="heat-stage">
-		<canvas bind:this={canvas} class="heat-canvas" aria-label="Heatmapa klikov"></canvas>
+	<div class="heat-stage" style="height: {STAGE_H}px">
+		<canvas
+			bind:this={canvas}
+			class="heat-canvas"
+			style="height: {STAGE_H}px"
+			aria-label="Heatmapa klikov"
+		></canvas>
 		<div class="heat-legend" aria-hidden="true">
 			<span>Málo</span>
 			<i></i>
@@ -225,6 +245,7 @@
 		letter-spacing: 0.06em;
 		text-transform: uppercase;
 		color: var(--color-ink);
+		cursor: pointer;
 	}
 
 	.heat-modes button.is-on {
@@ -248,21 +269,20 @@
 		position: relative;
 		border: 2px solid var(--color-ink);
 		box-shadow: 8px 8px 0 var(--color-punch);
-		background: var(--color-cream);
+		background: var(--color-paper-2);
 		overflow: hidden;
 	}
 
 	.heat-canvas {
 		display: block;
 		width: 100%;
-		height: min(62vh, 520px);
-		cursor: crosshair;
 	}
 
 	.heat-legend {
 		position: absolute;
 		right: 0.75rem;
 		bottom: 0.75rem;
+		z-index: 2;
 		display: flex;
 		align-items: center;
 		gap: 0.45rem;

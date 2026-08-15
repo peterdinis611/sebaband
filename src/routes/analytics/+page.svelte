@@ -71,7 +71,7 @@
 </section>
 
 <section class="border-b-2 border-ink bg-cream/40">
-	<div class="mx-auto max-w-[90rem] px-4 py-14 md:px-7 md:py-16" data-in>
+	<div class="mx-auto max-w-[90rem] px-4 py-14 md:px-7 md:py-16">
 		<p class="kicker">Click map</p>
 		<h2 class="display mt-2 text-4xl md:text-6xl">Kde ľudia klikajú</h2>
 		<p class="mt-3 max-w-2xl font-light text-ink-soft">
@@ -84,7 +84,7 @@
 </section>
 
 <section class="mx-auto grid max-w-[90rem] gap-10 px-4 py-14 md:grid-cols-12 md:px-7 md:py-20">
-	<div class="md:col-span-5" data-in>
+	<div class="md:col-span-5">
 		<p class="kicker">Inventár webu</p>
 		<ul class="mt-6 divide-y-2 divide-ink border-2 border-ink bg-cream">
 			{#each inventory as row (row.label)}
@@ -98,7 +98,7 @@
 		</ul>
 	</div>
 
-	<div class="md:col-span-7" data-in data-in-delay="60">
+	<div class="md:col-span-7">
 		<p class="kicker">Rezervácie</p>
 		<div class="mt-6 grid gap-4 sm:grid-cols-3">
 			<div class="border-2 border-ink bg-paprika p-4 text-foam shadow-[6px_6px_0_var(--color-punch)]">
@@ -153,7 +153,7 @@
 </section>
 
 <section class="border-t-2 border-ink bg-paper-2">
-	<div class="mx-auto max-w-[90rem] px-4 py-14 md:px-7 md:py-16" data-in>
+	<div class="mx-auto max-w-[90rem] px-4 py-14 md:px-7 md:py-16">
 		<div class="flex flex-wrap items-end justify-between gap-4">
 			<div>
 				<p class="kicker">Lokálne návštevy</p>

@@ -63,30 +63,44 @@
 	}
 </script>
 
-<div class="ticket p-5 md:p-8">
-	<div class="mb-6 flex items-center justify-between gap-3 px-3">
-		<button type="button" class="btn-ink !px-3 !py-2 !text-base" onclick={prev} aria-label="Predchádzajúci mesiac">
-			←
+<div class="ticket ticket-mobile p-2.5 sm:p-5 md:p-8">
+	<div class="mb-4 flex items-center justify-between gap-2 px-0 sm:mb-6 sm:px-3">
+		<button
+			type="button"
+			class="btn-ink grid h-11 w-11 shrink-0 place-items-center !px-0 !py-0 touch-manipulation sm:h-auto sm:w-auto sm:!px-3 sm:!py-2"
+			onclick={prev}
+			aria-label="Predchádzajúci mesiac"
+		>
+			<Icon name="prev" size={22} />
 		</button>
-		<p class="display text-4xl capitalize md:text-5xl">
+		<p
+			class="display min-w-0 flex-1 text-center text-[clamp(1.35rem,6vw,2.5rem)] leading-[0.9] capitalize md:text-5xl"
+		>
 			{monthNames[month]}
 			<span class="text-paprika">{year}</span>
 		</p>
-		<button type="button" class="btn-ink !px-3 !py-2 !text-base" onclick={next} aria-label="Nasledujúci mesiac">
-			→
+		<button
+			type="button"
+			class="btn-ink grid h-11 w-11 shrink-0 place-items-center !px-0 !py-0 touch-manipulation sm:h-auto sm:w-auto sm:!px-3 sm:!py-2"
+			onclick={next}
+			aria-label="Nasledujúci mesiac"
+		>
+			<Icon name="next" size={22} />
 		</button>
 	</div>
 
-	<div class="mb-2 grid grid-cols-7 gap-1 px-3 text-center">
+	<div class="mb-1.5 grid grid-cols-7 gap-1 px-0 text-center sm:mb-2 sm:gap-1 sm:px-3">
 		{#each weekdayNames as day (day)}
-			<span class="font-display text-sm font-extrabold uppercase text-paprika">{day}</span>
+			<span class="font-display text-[0.7rem] font-extrabold uppercase text-paprika sm:text-sm"
+				>{day.slice(0, 2)}</span
+			>
 		{/each}
 	</div>
 
-	<div bind:this={grid} class="grid grid-cols-7 gap-1 px-3">
+	<div bind:this={grid} class="grid grid-cols-7 gap-1 px-0 sm:gap-1 sm:px-3">
 		{#each cells as cell, i (cell.iso ?? `e-${i}`)}
 			{#if cell.day === null}
-				<div class="aspect-square"></div>
+				<div class="aspect-square min-h-10 sm:min-h-0"></div>
 			{:else if cell.iso}
 				{@const booked = isBooked(cell.iso)}
 				{@const past = isPast(cell.iso)}
@@ -95,7 +109,7 @@
 					type="button"
 					disabled={booked || past}
 					onclick={(e) => cell.iso && pick(cell.iso, e.currentTarget)}
-					class="aspect-square border-2 text-sm font-display font-extrabold transition
+					class="cal-day aspect-square min-h-10 border-2 font-display text-sm font-extrabold touch-manipulation transition active:scale-95 sm:min-h-0
 						{active ? 'border-ink bg-paprika text-foam' : ''}
 						{booked && !active ? 'cursor-not-allowed border-ink/20 bg-ink/10 text-dust line-through' : ''}
 						{past && !booked && !active ? 'cursor-not-allowed border-transparent text-dust' : ''}
@@ -105,14 +119,17 @@
 						: past
 							? `${cell.day}, minulý termín`
 							: `${cell.day}, voľný termín`}
+					aria-pressed={active}
 				>
-					<span class="text-xl md:text-2xl">{cell.day}</span>
+					<span class="text-[0.95rem] sm:text-xl md:text-2xl">{cell.day}</span>
 				</button>
 			{/if}
 		{/each}
 	</div>
 
-	<div class="mt-6 flex flex-wrap items-center gap-5 px-3 text-sm text-ink-soft">
+	<div
+		class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 px-0 text-xs text-ink-soft sm:mt-6 sm:gap-5 sm:px-3 sm:text-sm"
+	>
 		<span class="flex items-center gap-2">
 			<i class="inline-block h-3 w-3 border-2 border-ink bg-cream"></i> Voľný
 		</span>
@@ -125,14 +142,21 @@
 	</div>
 
 	{#if selected}
-		<div class="mt-6 flex flex-col items-start justify-between gap-4 border-t-2 border-dashed border-ink/30 px-3 pt-5 md:flex-row md:items-center">
-			<p>
-				Lístok na <strong class="font-display text-3xl uppercase text-paprika">{formatSlovakDate(selected)}</strong>
+		<div
+			class="mt-4 flex flex-col items-start justify-between gap-3 border-t-2 border-dashed border-ink/30 px-0 pt-4 sm:mt-6 sm:gap-4 sm:px-3 sm:pt-5 md:flex-row md:items-center"
+		>
+			<p class="min-w-0 text-sm sm:text-base">
+				Lístok na
+				<strong class="font-display block text-2xl uppercase text-paprika sm:inline sm:text-3xl"
+					>{formatSlovakDate(selected)}</strong
+				>
 			</p>
-			<div class="flex flex-wrap gap-3">
-				<a class="btn-hot" href="tel:{site.phone}"><Icon name="phone" size={18} /> Zavolať</a>
+			<div class="flex w-full flex-wrap gap-2 sm:w-auto sm:gap-3">
+				<a class="btn-hot w-full !py-3 sm:w-auto sm:!py-3" href="tel:{site.phone}"
+					><Icon name="phone" size={18} /> Zavolať</a
+				>
 				<a
-					class="btn-ink"
+					class="btn-ink w-full !py-3 sm:w-auto"
 					href="mailto:{site.email}?subject={encodeURIComponent(
 						`Rezervácia SEBA BAND — ${formatSlovakDate(selected)}`
 					)}"

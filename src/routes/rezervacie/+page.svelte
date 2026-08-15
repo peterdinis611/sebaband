@@ -5,6 +5,7 @@
 	import InquiryForm from '$lib/components/InquiryForm.svelte';
 	import PageHero from '$lib/components/PageHero.svelte';
 	import Seo from '$lib/components/Seo.svelte';
+	import { pages } from '$lib/data/seo';
 	import { site } from '$lib/data/site';
 
 	let selected = $state('');
@@ -16,8 +17,9 @@
 </script>
 
 <Seo
-	title="Rezervácie — SEBA BAND | Rezervačný kalendár"
-	description="Rezervačný kalendár SEBA BAND — voľné termíny rezervujete telefonicky, e-mailom alebo dopytom."
+	title={pages.booking.title}
+	description={pages.booking.description}
+	keywords={pages.booking.keywords}
 />
 
 <PageHero
@@ -31,7 +33,9 @@
 		<span class="icon-mark"><Icon name="phone" /></span>
 		<span>
 			<span class="kicker">Telefón</span>
-			<span class="display mt-1 block text-3xl md:text-4xl">{site.phoneDisplay}</span>
+			<span class="display mt-1 block text-2xl tracking-tight sm:text-3xl md:text-4xl"
+				>{site.phoneDisplay}</span
+			>
 		</span>
 	</a>
 	<a class="contact-card" href="mailto:{site.email}">

@@ -13,7 +13,7 @@ function apply(mode: ThemeName) {
 	document.documentElement.style.colorScheme = mode;
 	document
 		.querySelector('meta[name="theme-color"]')
-		?.setAttribute('content', mode === 'dark' ? '#0c0b0a' : '#f3ead8');
+		?.setAttribute('content', mode === 'dark' ? '#100e0c' : '#f3ead8');
 }
 
 export function hydrateTheme() {

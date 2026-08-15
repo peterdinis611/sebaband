@@ -47,8 +47,8 @@
 		? 'bg-paper/92 backdrop-blur-md'
 		: 'bg-paper'}"
 >
-	<div class="mx-auto flex max-w-[90rem] items-center justify-between gap-4 px-4 py-3 md:px-7">
-		<a href="/" class="flex items-center gap-2 no-underline">
+	<div class="mx-auto flex max-w-[90rem] items-center justify-between gap-3 px-4 py-3 md:gap-4 md:px-7">
+		<a href="/" class="flex min-w-0 items-center gap-2 no-underline">
 			<img
 				src="/images/logo.webp"
 				alt=""
@@ -56,9 +56,11 @@
 				height="40"
 				fetchpriority="high"
 				decoding="async"
-				class="brand-mark h-10 w-10 mix-blend-multiply"
+				class="brand-mark h-8 w-8 shrink-0 mix-blend-multiply sm:h-10 sm:w-10"
 			/>
-			<span class="display text-2xl text-ink md:text-3xl">{site.name}</span>
+			<span class="display truncate whitespace-nowrap text-xl text-ink sm:text-2xl md:text-3xl"
+				>{site.name}</span
+			>
 		</a>
 
 		<nav class="hidden items-center gap-5 xl:flex" aria-label="Hlavná navigácia">
@@ -76,7 +78,7 @@
 			{/each}
 		</nav>
 
-		<div class="flex items-center gap-2">
+		<div class="flex shrink-0 items-center gap-2">
 			<button
 				type="button"
 				class="theme-toggle"
@@ -90,9 +92,6 @@
 					<Icon name="moon" size={20} />
 				{/if}
 			</button>
-			<a href="tel:{site.phone}" class="btn-hot hidden !py-2 !text-base lg:inline-flex"
-				><Icon name="phone" size={16} /> Volajte</a
-			>
 			<button
 				type="button"
 				class="grid h-11 w-11 place-items-center border-2 border-ink bg-cream xl:hidden"

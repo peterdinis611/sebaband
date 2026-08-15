@@ -3,13 +3,11 @@
 	import Reveal from '$lib/components/Reveal.svelte';
 	import Seo from '$lib/components/Seo.svelte';
 	import SmartImage from '$lib/components/SmartImage.svelte';
+	import { pages } from '$lib/data/seo';
 	import { site } from '$lib/data/site';
 </script>
 
-<Seo
-	title="O nás — SEBA BAND | Rómska live kapela"
-	description="Zoznámte sa so SEBA BAND: rómska live kapela, široký repertoár, vlastná zvuková a svetelná technika. Hráme na Slovensku aj v zahraničí."
-/>
+<Seo title={pages.about.title} description={pages.about.description} keywords={pages.about.keywords} />
 
 <PageHero
 	kicker="O nás"
@@ -17,17 +15,23 @@
 	lede="Šesť členov — bratia a bratranci, ktorých spája krv aj hudba."
 />
 
-<section class="mx-auto grid max-w-[90rem] items-center gap-12 px-4 py-16 md:grid-cols-12 md:px-7">
+<section class="mx-auto grid max-w-[90rem] items-center gap-12 overflow-x-clip px-4 py-16 md:grid-cols-12 md:px-7">
 	<Reveal class="md:col-span-6">
-		<SmartImage
-			src="/images/hero-band.jpg"
-			alt="Členovia kapely SEBA BAND v elegantnom čiernom oblečení"
-			width={1400}
-			height={1050}
-			sizes="(min-width: 768px) 50vw, 100vw"
-			class="block -rotate-2 overflow-hidden border-2 border-ink shadow-[10px_10px_0_var(--color-paprika)]"
-			imgClass="aspect-[4/3] w-full object-cover object-[50%_18%]"
-		/>
+		<div
+			class="max-md:rotate-0 -rotate-2 overflow-hidden border-2 border-ink shadow-[10px_10px_0_var(--color-paprika)]"
+		>
+			<div data-parallax="0.15" class="will-change-transform">
+				<SmartImage
+					src="/images/hero-band.jpg"
+					alt="Členovia kapely SEBA BAND v elegantnom čiernom oblečení"
+					width={1400}
+					height={1050}
+					sizes="(min-width: 768px) 50vw, 100vw"
+					class="block scale-[1.12]"
+					imgClass="aspect-[4/3] w-full object-cover object-[50%_18%]"
+				/>
+			</div>
+		</div>
 	</Reveal>
 	<Reveal class="md:col-span-5 md:col-start-8">
 		<p class="kicker">Od {site.founded}</p>

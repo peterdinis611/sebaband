@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { page } from '$app/state';
+
 	let {
 		src,
 		alt,
@@ -19,20 +21,29 @@
 		sizes?: string;
 	} = $props();
 
-	const webp = $derived(src.replace(/\.(jpe?g|png)$/i, '.webp'));
+	const lite = $derived(page.url.searchParams.get('preview') === '1');
+	const base = $derived(src.replace(/\.(jpe?g|png)$/i, ''));
+	const webpSm = $derived(`${base}-sm.webp`);
+	const webpMd = $derived(`${base}-md.webp`);
+	const webp = $derived(`${base}.webp`);
+	const srcset = $derived(
+		lite ? `${webpSm} 720w` : `${webpSm} 720w, ${webpMd} 1100w, ${webp} 1400w`
+	);
+	const resolvedSizes = $derived(lite ? '640px' : sizes);
+	const eager = $derived(!lite && priority);
 </script>
 
 <picture class={className}>
-	<source type="image/webp" srcset={webp} {sizes} />
+	<source type="image/webp" srcset={srcset} sizes={resolvedSizes} />
 	<img
-		{src}
+		src={lite ? webpSm : src}
 		{alt}
 		{width}
 		{height}
-		{sizes}
+		sizes={resolvedSizes}
 		class={imgClass}
-		loading={priority ? 'eager' : 'lazy'}
-		fetchpriority={priority ? 'high' : 'auto'}
+		loading={eager ? 'eager' : 'lazy'}
+		fetchpriority={eager ? 'high' : 'auto'}
 		decoding="async"
 	/>
 </picture>

@@ -17,7 +17,8 @@
 		"test:headed": "playwright test --headed",
 		"test:stress": "playwright test -c playwright.stress.config.ts",
 		"test:load": "node scripts/load-stress.mjs",
-		"test:load:heavy": "CONCURRENCY=80 DURATION_MS=45000 node scripts/load-stress.mjs"
+		"test:load:heavy": "CONCURRENCY=80 DURATION_MS=45000 node scripts/load-stress.mjs",
+		"images": "node scripts/optimize-images.mjs"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
@@ -43,7 +44,7 @@
 		"vite": "^8.0.16"
 	},
 	"dependencies": {
-		"animejs": "^4.5.0",
-		"phosphor-svelte": "^3.1.0"
+		"@lucide/svelte": "^1.31.0",
+		"animejs": "^4.5.0"
 	}
 }

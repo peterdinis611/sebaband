@@ -213,7 +213,7 @@
 		font-size: 0.95rem;
 		letter-spacing: 0.06em;
 		text-transform: uppercase;
-		box-shadow: 4px 4px 0 var(--color-punch);
+		box-shadow: 4px 4px 0 var(--color-ledge);
 		pointer-events: auto;
 		cursor: pointer;
 	}
@@ -230,7 +230,7 @@
 		border: 2px solid var(--color-ink);
 		background: var(--color-cream);
 		color: var(--color-ink);
-		box-shadow: 4px 4px 0 var(--color-punch);
+		box-shadow: 4px 4px 0 var(--color-ledge);
 		pointer-events: auto;
 		cursor: pointer;
 	}
@@ -311,25 +311,57 @@
 
 	@media (max-width: 720px) {
 		.lb {
-			padding: 4.25rem 0.65rem 0.85rem;
+			padding: max(4.25rem, env(safe-area-inset-top, 0px) + 3.5rem)
+				0.5rem
+				max(5.25rem, env(safe-area-inset-bottom, 0px) + 3.75rem);
+		}
+
+		.lb-close {
+			top: max(0.65rem, env(safe-area-inset-top, 0px));
+			right: max(0.65rem, env(safe-area-inset-right, 0px));
+			padding: 0.5rem;
+			min-width: 2.6rem;
+			min-height: 2.6rem;
+			justify-content: center;
 		}
 
 		.lb-nav {
 			top: auto;
-			bottom: 5.4rem;
+			bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
 			transform: none;
-			width: 2.6rem;
-			height: 2.6rem;
+			width: 2.75rem;
+			height: 2.75rem;
+		}
+
+		.lb-prev {
+			left: max(0.65rem, env(safe-area-inset-left, 0px));
+		}
+
+		.lb-next {
+			right: max(0.65rem, env(safe-area-inset-right, 0px));
+		}
+
+		.lb-frame {
+			width: min(100vw - 1rem, 1080px);
+			max-height: calc(100dvh - 10.5rem);
+			padding: 0.45rem 0.45rem 0;
+			box-shadow: 6px 6px 0 var(--color-punch);
+		}
+
+		.lb-photo :global(.lb-img) {
+			max-height: calc(100dvh - 13rem);
 		}
 
 		.lb-cap {
 			flex-direction: column;
 			align-items: flex-start;
 			gap: 0.2rem;
+			padding: 0.55rem 0.1rem 0.7rem;
 		}
 
 		.lb-cap p {
 			text-align: left;
+			font-size: 0.85rem;
 		}
 
 		.lb-close span {

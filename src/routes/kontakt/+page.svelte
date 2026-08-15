@@ -2,12 +2,14 @@
 	import Icon from '$lib/components/Icon.svelte';
 	import PageHero from '$lib/components/PageHero.svelte';
 	import Seo from '$lib/components/Seo.svelte';
+	import { pages } from '$lib/data/seo';
 	import { site } from '$lib/data/site';
 </script>
 
 <Seo
-	title="Kontakt — SEBA BAND"
-	description="Kontaktujte SEBA BAND — telefón, e-mail, Facebook, TikTok, YouTube. Termín rezervujte na stránke Rezervácie."
+	title={pages.contact.title}
+	description={pages.contact.description}
+	keywords={pages.contact.keywords}
 />
 
 <PageHero
@@ -22,7 +24,9 @@
 			<span class="icon-mark"><Icon name="phone" /></span>
 			<span>
 				<span class="kicker">Telefón</span>
-				<span class="display mt-1 block text-4xl">{site.phoneDisplay}</span>
+				<span class="display mt-1 block text-2xl tracking-tight sm:text-3xl md:text-4xl"
+					>{site.phoneDisplay}</span
+				>
 			</span>
 		</a>
 		<a class="contact-card" href="mailto:{site.email}">
@@ -36,17 +40,19 @@
 			<span class="icon-mark icon-mark-foam"><Icon name="pin" /></span>
 			<span>
 				<span class="kicker">Pôsobíme</span>
-				<span class="display mt-1 block text-4xl text-foam">{site.region}</span>
+				<span class="display mt-1 block text-2xl text-foam sm:text-3xl md:text-4xl"
+					>{site.region}</span
+				>
 			</span>
 		</div>
 		<div class="flex flex-wrap gap-2 pt-2">
-			<a class="btn-ink" href={site.facebook} rel="noreferrer" target="_blank"
+			<a class="btn-ink !px-3 !py-2 !text-sm sm:!px-6 sm:!text-base" href={site.facebook} rel="noreferrer" target="_blank"
 				><Icon name="facebook" size={18} /> Facebook</a
 			>
-			<a class="btn-ink" href={site.tiktok} rel="noreferrer" target="_blank"
+			<a class="btn-ink !px-3 !py-2 !text-sm sm:!px-6 sm:!text-base" href={site.tiktok} rel="noreferrer" target="_blank"
 				><Icon name="tiktok" size={18} /> TikTok</a
 			>
-			<a class="btn-ink" href={site.youtube} rel="noreferrer" target="_blank"
+			<a class="btn-ink !px-3 !py-2 !text-sm sm:!px-6 sm:!text-base" href={site.youtube} rel="noreferrer" target="_blank"
 				><Icon name="youtube" size={18} /> YouTube</a
 			>
 		</div>

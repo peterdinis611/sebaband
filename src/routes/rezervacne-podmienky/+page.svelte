@@ -1,13 +1,11 @@
 <script lang="ts">
 	import PageHero from '$lib/components/PageHero.svelte';
 	import Seo from '$lib/components/Seo.svelte';
+	import { pages } from '$lib/data/seo';
 	import { site } from '$lib/data/site';
 </script>
 
-<Seo
-	title="Rezervačné podmienky — SEBA BAND"
-	description="Rezervačné podmienky SEBA BAND: záloha, storna a výnimočné situácie."
-/>
+<Seo title={pages.terms.title} description={pages.terms.description} keywords={pages.terms.keywords} />
 
 <PageHero kicker="Rezervácia" title="Podmienky" />
 

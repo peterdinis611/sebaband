@@ -52,6 +52,9 @@
 </script>
 
 <div bind:this={root} class="page-curtain" data-on="0" aria-hidden="true">
+	<div class="js-turn-slash page-curtain-layer page-curtain-slash-wrap">
+		<div class="page-curtain-slash"></div>
+	</div>
 	<div class="js-turn-ink page-curtain-layer">
 		<div class="page-curtain-ink"></div>
 	</div>

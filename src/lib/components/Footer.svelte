@@ -4,9 +4,9 @@
 </script>
 
 <footer class="border-t-2 border-ink bg-pine text-foam">
-	<div class="mx-auto grid max-w-[90rem] gap-10 px-4 py-16 md:grid-cols-12 md:px-7" data-in-stagger>
+	<div class="mx-auto grid max-w-[90rem] gap-10 px-4 py-14 pb-28 md:grid-cols-12 md:px-7 md:py-16 md:pb-16">
 		<div class="md:col-span-5">
-			<p class="display text-5xl text-foam">{site.name}</p>
+			<p class="display text-4xl text-foam sm:text-5xl">{site.name}</p>
 			<p class="mt-3 max-w-sm font-light text-foam/80">
 				Svadby, oslavy, plesy, zábavy, festivaly a firemné akcie na Slovensku aj v zahraničí.
 			</p>
@@ -38,19 +38,19 @@
 			<p class="kicker !text-paprika">Sledujte</p>
 			<div class="mt-4 flex flex-wrap gap-2">
 				<a
-					class="btn-ink !border-foam !text-foam hover:!bg-foam hover:!text-pine"
+					class="btn-on-dark !px-3 !py-2 !text-sm sm:!px-6 sm:!py-3 sm:!text-base"
 					href={site.facebook}
 					rel="noreferrer"
 					target="_blank"><Icon name="facebook" size={18} /> Facebook</a
 				>
 				<a
-					class="btn-ink !border-foam !text-foam hover:!bg-foam hover:!text-pine"
+					class="btn-on-dark !px-3 !py-2 !text-sm sm:!px-6 sm:!py-3 sm:!text-base"
 					href={site.tiktok}
 					rel="noreferrer"
 					target="_blank"><Icon name="tiktok" size={18} /> TikTok</a
 				>
 				<a
-					class="btn-ink !border-foam !text-foam hover:!bg-foam hover:!text-pine"
+					class="btn-on-dark !px-3 !py-2 !text-sm sm:!px-6 sm:!py-3 sm:!text-base"
 					href={site.youtube}
 					rel="noreferrer"
 					target="_blank"><Icon name="youtube" size={18} /> YouTube</a
