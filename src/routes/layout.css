@@ -126,6 +126,12 @@ body {
 	opacity: 0.2;
 }
 
+html.lb-open .scroll-top,
+html.lb-open .btn-hot.fixed {
+	visibility: hidden;
+	pointer-events: none;
+}
+
 [data-theme='dark'] .stamp {
 	mix-blend-mode: normal;
 }
@@ -309,6 +315,7 @@ body {
 	}
 }
 
+.js-hero,
 .js-await,
 .js-stat,
 [data-in],
@@ -597,6 +604,7 @@ html.is-booting {
 	.reveal,
 	.stamp-in,
 	.marquee-track,
+	.js-hero,
 	.js-await,
 	.js-stat,
 	[data-in],

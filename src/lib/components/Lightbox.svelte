@@ -41,23 +41,31 @@
 	}
 
 	$effect(() => {
+		document.documentElement.classList.toggle('lb-open', open);
+		return () => document.documentElement.classList.remove('lb-open');
+	});
+
+	$effect(() => {
 		if (!open || !overlay) return;
 
 		const onKey = (e: KeyboardEvent) => {
-			if (e.key === 'Escape') close();
+			if (e.key === 'Escape') {
+				e.preventDefault();
+				close();
+			}
 			if (e.key === 'ArrowLeft') prev();
 			if (e.key === 'ArrowRight') next();
 		};
 
 		window.addEventListener('keydown', onKey);
 		document.body.style.overflow = 'hidden';
-		overlay.focus();
+		overlay.focus({ preventScroll: true });
 
 		if (!prefersReducedMotion() && frame) {
 			set(overlay, { opacity: 0 });
-			set(frame, { scale: 0.86, y: 36, rotate: -1.4 });
-			animate(overlay, { opacity: 1, duration: 260, ease: 'outQuad' });
-			animate(frame, { scale: 1, y: 0, rotate: 0, duration: 520, ease: 'outExpo' });
+			set(frame, { scale: 0.92, y: 24, rotate: -0.8 });
+			animate(overlay, { opacity: 1, duration: 220, ease: 'outQuad' });
+			animate(frame, { scale: 1, y: 0, rotate: 0, duration: 420, ease: 'outExpo' });
 		}
 
 		return () => {
@@ -77,8 +85,8 @@
 			return;
 		}
 		if (!photo || prefersReducedMotion()) return;
-		set(photo, { opacity: 0.2, y: 12 });
-		animate(photo, { opacity: 1, y: 0, duration: 320, ease: 'outQuad' });
+		set(photo, { opacity: 0.25, y: 10 });
+		animate(photo, { opacity: 1, y: 0, duration: 280, ease: 'outQuad' });
 	});
 
 	let touchX = 0;
@@ -88,6 +96,8 @@
 	}
 
 	function onTouchEnd(e: TouchEvent) {
+		const target = e.target as HTMLElement | null;
+		if (target?.closest('button')) return;
 		const dx = (e.changedTouches[0]?.clientX ?? 0) - touchX;
 		if (dx > 56) prev();
 		if (dx < -56) next();
@@ -104,7 +114,7 @@
 		aria-label={current.alt}
 		tabindex="-1"
 		onclick={(e) => {
-			if (e.currentTarget === e.target) close();
+			if (e.target === e.currentTarget) close();
 		}}
 		onkeydown={(e) => {
 			if (e.key === 'Escape') close();
@@ -112,37 +122,63 @@
 		ontouchstart={onTouchStart}
 		ontouchend={onTouchEnd}
 	>
-		<button type="button" class="lb-close" onclick={close} aria-label="Zavrieť">
+		<button
+			type="button"
+			class="lb-close"
+			onclick={(e) => {
+				e.stopPropagation();
+				close();
+			}}
+			aria-label="Zavrieť"
+		>
 			<Icon name="close" size={22} />
 			<span>Zavrieť</span>
 		</button>
 
 		{#if total > 1}
-			<button type="button" class="lb-nav lb-prev" onclick={prev} aria-label="Predchádzajúca">
+			<button
+				type="button"
+				class="lb-nav lb-prev"
+				onclick={(e) => {
+					e.stopPropagation();
+					prev();
+				}}
+				aria-label="Predchádzajúca"
+			>
 				<Icon name="prev" size={26} />
 			</button>
-			<button type="button" class="lb-nav lb-next" onclick={next} aria-label="Ďalšia">
+			<button
+				type="button"
+				class="lb-nav lb-next"
+				onclick={(e) => {
+					e.stopPropagation();
+					next();
+				}}
+				aria-label="Ďalšia"
+			>
 				<Icon name="next" size={26} />
 			</button>
 		{/if}
 
-		<figure bind:this={frame} class="lb-frame">
-			<div bind:this={photo} class="lb-photo">
-				<SmartImage
-					src={current.src}
-					alt={current.alt}
-					width={current.width}
-					height={current.height}
-					priority
-					sizes="92vw"
-					imgClass="lb-img"
-				/>
-			</div>
-			<figcaption class="lb-cap">
-				<span class="lb-kicker">{label} / {count}</span>
-				<p>{current.alt}</p>
-			</figcaption>
-		</figure>
+		<div class="lb-stage" role="presentation" onclick={(e) => e.stopPropagation()}>
+			<figure bind:this={frame} class="lb-frame">
+				<div bind:this={photo} class="lb-photo">
+					<SmartImage
+						src={current.src}
+						alt={current.alt}
+						width={current.width}
+						height={current.height}
+						priority
+						sizes="92vw"
+						imgClass="lb-img"
+					/>
+				</div>
+				<figcaption class="lb-cap">
+					<span class="lb-kicker">{label} / {count}</span>
+					<p>{current.alt}</p>
+				</figcaption>
+			</figure>
+		</div>
 	</div>
 {/if}
 
@@ -150,38 +186,42 @@
 	.lb {
 		position: fixed;
 		inset: 0;
-		z-index: 200;
+		z-index: 400;
 		display: grid;
 		place-items: center;
 		padding: 4.5rem 1rem 1.25rem;
 		background: var(--color-scrim);
 		outline: none;
+		pointer-events: auto;
+		isolation: isolate;
 	}
 
 	.lb-close {
 		position: absolute;
 		top: 1rem;
 		right: 1rem;
-		z-index: 2;
+		z-index: 5;
 		display: inline-flex;
 		align-items: center;
 		gap: 0.45rem;
 		border: 2px solid var(--color-ink);
 		background: var(--color-paprika);
 		color: var(--color-foam);
-		padding: 0.45rem 0.85rem;
+		padding: 0.55rem 0.95rem;
 		font-family: var(--font-display);
 		font-weight: 800;
 		font-size: 0.95rem;
 		letter-spacing: 0.06em;
 		text-transform: uppercase;
 		box-shadow: 4px 4px 0 var(--color-punch);
+		pointer-events: auto;
+		cursor: pointer;
 	}
 
 	.lb-nav {
 		position: absolute;
 		top: 50%;
-		z-index: 2;
+		z-index: 5;
 		display: grid;
 		place-items: center;
 		width: 3rem;
@@ -191,6 +231,8 @@
 		background: var(--color-cream);
 		color: var(--color-ink);
 		box-shadow: 4px 4px 0 var(--color-punch);
+		pointer-events: auto;
+		cursor: pointer;
 	}
 
 	.lb-prev {
@@ -201,7 +243,14 @@
 		right: 0.75rem;
 	}
 
+	.lb-stage {
+		position: relative;
+		z-index: 1;
+		max-width: 100%;
+	}
+
 	.lb-frame {
+		position: relative;
 		margin: 0;
 		width: min(92vw, 1080px);
 		max-height: calc(100dvh - 5.75rem);
@@ -211,6 +260,7 @@
 		border: 2px solid var(--color-ink);
 		box-shadow: 10px 10px 0 var(--color-punch);
 		padding: 0.7rem 0.7rem 0;
+		pointer-events: auto;
 	}
 
 	.lb-photo {

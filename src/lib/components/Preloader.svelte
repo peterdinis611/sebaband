@@ -27,7 +27,7 @@
 			document.getElementById('boot')?.remove();
 			document.documentElement.classList.remove('is-booting');
 			boot.locked = false;
-		}, 3200);
+		}, 1400);
 		void playBoot(el).finally(() => {
 			window.clearTimeout(failsafe);
 			if (!dead) boot.locked = false;

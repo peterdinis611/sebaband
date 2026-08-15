@@ -54,6 +54,8 @@
 				alt=""
 				width="40"
 				height="40"
+				fetchpriority="high"
+				decoding="async"
 				class="brand-mark h-10 w-10 mix-blend-multiply"
 			/>
 			<span class="display text-2xl text-ink md:text-3xl">{site.name}</span>

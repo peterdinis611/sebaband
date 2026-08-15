@@ -23,11 +23,25 @@
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,500&display=swap"
-			rel="stylesheet"
+			rel="preload"
+			as="style"
+			href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&display=swap"
 		/>
-		<link rel="preload" as="image" href="/images/hero-band.webp" type="image/webp" />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&display=swap"
+		/>
+		<link rel="preload" as="image" href="/images/hero-band.webp" type="image/webp" fetchpriority="high" />
+		<link rel="preload" as="image" href="/images/logo.webp" type="image/webp" />
 		<style>
+			/* Keep first paint filled — Impact until webfonts arrive */
+			.display,
+			.font-display,
+			.kicker,
+			.btn-hot,
+			.btn-ink {
+				font-family: 'Big Shoulders Display', Impact, 'Arial Narrow', sans-serif;
+			}
 			#boot {
 				position: fixed;
 				inset: 0;
@@ -89,7 +103,6 @@
 				background: #fff8ec;
 				transform: scaleX(0.12);
 				transform-origin: left center;
-				animation: boot-load 1.15s ease-in-out infinite alternate;
 			}
 			#boot .boot-stamp {
 				position: absolute;
@@ -102,14 +115,6 @@
 				letter-spacing: 0.2em;
 				text-transform: uppercase;
 				transform: rotate(-8deg);
-			}
-			@keyframes boot-load {
-				from {
-					transform: scaleX(0.12);
-				}
-				to {
-					transform: scaleX(0.68);
-				}
 			}
 			html.is-booting {
 				overflow: hidden;

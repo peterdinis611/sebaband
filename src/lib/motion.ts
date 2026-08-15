@@ -4,9 +4,9 @@ import {
 	createTimeline,
 	onScroll,
 	set,
-	splitText,
 	stagger
 } from 'animejs';
+import { boot } from '$lib/boot.svelte';
 
 export function prefersReducedMotion(): boolean {
 	return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -18,77 +18,66 @@ function showNow(els: Iterable<Element>) {
 
 export function playLanding(root: HTMLElement): () => void {
 	if (prefersReducedMotion()) {
-		showNow(root.querySelectorAll('.js-await, .js-stat'));
+		showNow(root.querySelectorAll('.js-hero, .js-await, .js-stat'));
 		return () => {};
 	}
 
-	let split: ReturnType<typeof splitText> | null = null;
+	const hero = root.querySelector<HTMLElement>('.js-hero');
+	const stats = [...root.querySelectorAll<HTMLElement>('.js-stat')];
+	const img = root.querySelector<HTMLImageElement>('.js-hero-photo img');
 
-	const scope = createScope({ root }).add(() => {
-		const title = root.querySelector('.js-hero-title');
-		const kicker = root.querySelector('.js-hero-kicker');
-		const lede = root.querySelector('.js-hero-lede');
-		const ctas = root.querySelector('.js-hero-ctas');
-		const region = root.querySelector('.js-hero-region');
-		const photo = root.querySelector('.js-hero-photo');
-		const stats = root.querySelectorAll('.js-stat');
+	let started = false;
+	let timer = 0;
+	const cleanups: Array<() => void> = [];
 
-		split = title ? splitText(title, { chars: true }) : null;
-		split?.chars.forEach((char) => {
-			(char as HTMLElement).style.display = 'inline-block';
-		});
-		if (split?.chars.length) {
-			set(split.chars, { opacity: 0, y: 72, rotate: 8 });
+	const start = () => {
+		if (started) return;
+		started = true;
+		window.clearTimeout(timer);
+
+		if (hero) {
+			animate(hero, {
+				opacity: [0, 1],
+				y: [18, 0],
+				duration: 520,
+				ease: 'outExpo'
+			});
+		} else {
+			showNow(root.querySelectorAll('.js-await'));
 		}
 
-		const tl = createTimeline({ defaults: { ease: 'outExpo' } });
-
-		if (kicker) {
-			tl.add(kicker, { opacity: [0, 1], y: [18, 0], duration: 700 }, 0);
-		}
-		if (split?.chars.length) {
-			tl.add(
-				split.chars,
-				{
-					opacity: [0, 1],
-					y: [72, 0],
-					rotate: [8, 0],
-					duration: 980,
-					delay: stagger(22, { from: 'first' }),
-					ease: 'outExpo'
-				},
-				60
-			);
-		} else if (title) {
-			tl.add(title, { opacity: [0, 1], y: [28, 0], duration: 800 }, 60);
-		}
-		if (lede) tl.add(lede, { opacity: [0, 1], y: [22, 0], duration: 780 }, 380);
-		if (ctas) tl.add(ctas, { opacity: [0, 1], y: [18, 0], duration: 700 }, 500);
-		if (region) tl.add(region, { opacity: [0, 1], duration: 600 }, 620);
-		if (photo) {
-			tl.add(
-				photo,
-				{ opacity: [0, 1], y: [56, 0], scale: [0.94, 1], duration: 1100, ease: 'outExpo' },
-				140
-			);
-		}
 		if (stats.length) {
-			tl.add(
-				stats,
-				{
-					opacity: [0, 1],
-					y: [24, 0],
-					duration: 640,
-					delay: stagger(90)
-				},
-				720
-			);
+			animate(stats, {
+				opacity: [0, 1],
+				y: [12, 0],
+				duration: 420,
+				delay: stagger(40),
+				ease: 'outExpo'
+			});
 		}
-	});
+	};
+
+	// Reveal only after hero bitmap is ready (or short failsafe) — no lone title over empty photo.
+	if (img && !img.complete) {
+		const onReady = () => start();
+		img.addEventListener('load', onReady, { once: true });
+		img.addEventListener('error', onReady, { once: true });
+		cleanups.push(() => {
+			img.removeEventListener('load', onReady);
+			img.removeEventListener('error', onReady);
+		});
+		timer = window.setTimeout(start, 480);
+	} else if (img?.decode) {
+		void img.decode().then(start).catch(start);
+		timer = window.setTimeout(start, 480);
+	} else {
+		start();
+	}
 
 	return () => {
-		split?.revert();
-		scope.revert();
+		window.clearTimeout(timer);
+		cleanups.forEach((fn) => fn());
+		showNow(root.querySelectorAll('.js-hero, .js-await, .js-stat'));
 	};
 }
 
@@ -190,22 +179,11 @@ export function playHeader(el: HTMLElement): () => void {
 	if (prefersReducedMotion()) return () => {};
 
 	const scope = createScope({ root: el }).add(() => {
-		const links = el.querySelectorAll('nav a');
-		if (links.length) set(links, { opacity: 0, y: -10 });
 		animate(el, {
-			y: [-14, 0],
-			duration: 640,
+			y: [-8, 0],
+			duration: 380,
 			ease: 'outExpo'
 		});
-		if (links.length) {
-			animate(links, {
-				opacity: 1,
-				y: 0,
-				delay: stagger(40),
-				duration: 520,
-				ease: 'outQuad'
-			});
-		}
 	});
 
 	return () => scope.revert();
@@ -220,41 +198,18 @@ export function playPageHero(el: HTMLElement): () => void {
 	const title = el.querySelector('h1');
 	const kicker = el.querySelector('.kicker');
 	const lede = el.querySelector('p:not(.kicker)');
-	const split = title ? splitText(title, { chars: true }) : null;
-	split?.chars.forEach((char) => {
-		(char as HTMLElement).style.display = 'inline-block';
-	});
-	if (split?.chars.length) {
-		set(split.chars, { opacity: 0, y: 48 });
-	}
 
 	const tl = createTimeline({ defaults: { ease: 'outExpo' } });
-	if (kicker) tl.add(kicker, { opacity: [0, 1], y: [14, 0], duration: 600 }, 0);
-	if (split?.chars.length) {
-		tl.add(
-			split.chars,
-			{
-				opacity: [0, 1],
-				y: [48, 0],
-				duration: 820,
-				delay: stagger(16)
-			},
-			40
-		);
-	} else if (title) {
-		tl.add(title, { opacity: [0, 1], y: [20, 0], duration: 720 }, 40);
-	}
-	if (lede) tl.add(lede, { opacity: [0, 1], y: [18, 0], duration: 700 }, 280);
+	if (kicker) tl.add(kicker, { opacity: [0, 1], y: [10, 0], duration: 380 }, 0);
+	if (title) tl.add(title, { opacity: [0, 1], y: [16, 0], duration: 460 }, 30);
+	if (lede) tl.add(lede, { opacity: [0, 1], y: [12, 0], duration: 400 }, 120);
 	const stamp = el.querySelector('.stamp');
 	if (stamp) {
-		set(stamp, { opacity: 0, scale: 1.45, rotate: -22 });
-		tl.add(stamp, { opacity: 1, scale: 1, rotate: -8, duration: 520 }, 360);
+		set(stamp, { opacity: 0, scale: 1.3, rotate: -18 });
+		tl.add(stamp, { opacity: 1, scale: 1, rotate: -8, duration: 380 }, 180);
 	}
 
-	return () => {
-		tl.revert();
-		split?.revert();
-	};
+	return () => tl.revert();
 }
 
 export function playGallery(el: HTMLElement): () => void {
@@ -350,33 +305,29 @@ function sleep(ms: number) {
 	return new Promise<void>((resolve) => setTimeout(resolve, ms));
 }
 
-function loadHeroImage(): Promise<void> {
-	return new Promise((resolve) => {
-		const img = new Image();
-		const done = () => resolve();
-		img.onload = done;
-		img.onerror = () => {
-			if (!img.src.includes('hero-band.jpg')) {
-				img.src = '/images/hero-band.jpg';
-				return;
+/** Soft-preload hero; never block boot longer than `budgetMs`. */
+function warmHeroImage(budgetMs = 280): Promise<void> {
+	return Promise.race([
+		new Promise<void>((resolve) => {
+			const img = new Image();
+			const done = () => resolve();
+			img.onload = done;
+			img.onerror = done;
+			img.decoding = 'async';
+			img.src = '/images/hero-band.webp';
+			if (typeof img.decode === 'function') {
+				img.decode().then(done).catch(done);
 			}
-			done();
-		};
-		img.src = '/images/hero-band.webp';
-		if (typeof img.decode === 'function') {
-			img.decode().then(done).catch(done);
-		}
-	});
+		}),
+		sleep(budgetMs)
+	]);
 }
 
 export async function playBoot(root: HTMLElement): Promise<void> {
-	const done = () => {
-		document.documentElement.classList.remove('is-booting');
-		root.remove();
-	};
-
 	if (prefersReducedMotion()) {
-		done();
+		document.documentElement.classList.remove('is-booting');
+		boot.locked = false;
+		root.remove();
 		return;
 	}
 
@@ -386,55 +337,37 @@ export async function playBoot(root: HTMLElement): Promise<void> {
 	const bar = root.querySelector<HTMLElement>('.js-boot-bar');
 	const pct = root.querySelector<HTMLElement>('.js-boot-pct');
 
-	const split = title ? splitText(title, { chars: true }) : null;
-	split?.chars.forEach((char) => {
-		(char as HTMLElement).style.display = 'inline-block';
-	});
-	if (split?.chars.length) set(split.chars, { opacity: 0, y: 56, rotate: 8 });
-	if (kicker) set(kicker, { opacity: 0, y: 14 });
-	if (stamp) set(stamp, { opacity: 0, scale: 1.4, rotate: -22 });
+	if (kicker) set(kicker, { opacity: 0, y: 10 });
+	if (title) set(title, { opacity: 0, y: 18 });
+	if (stamp) set(stamp, { opacity: 0, scale: 1.25, rotate: -18 });
 	if (bar) {
 		bar.style.animation = 'none';
-		set(bar, { scaleX: 0.08 });
+		set(bar, { scaleX: 0.12 });
 	}
 
 	const intro = createTimeline({ defaults: { ease: 'outExpo' } });
-	if (kicker) intro.add(kicker, { opacity: 1, y: 0, duration: 420 }, 0);
-	if (split?.chars.length) {
-		intro.add(
-			split.chars,
-			{
-				opacity: 1,
-				y: 0,
-				rotate: 0,
-				duration: 720,
-				delay: stagger(28)
-			},
-			80
-		);
-	}
-	if (stamp) intro.add(stamp, { opacity: 1, scale: 1, rotate: -8, duration: 420 }, 360);
+	if (kicker) intro.add(kicker, { opacity: 1, y: 0, duration: 280 }, 0);
+	if (title) intro.add(title, { opacity: 1, y: 0, duration: 420 }, 40);
+	if (stamp) intro.add(stamp, { opacity: 1, scale: 1, rotate: -8, duration: 320 }, 160);
 
 	if (bar) {
 		animate(bar, {
-			scaleX: 0.86,
-			duration: 1500,
+			scaleX: 0.9,
+			duration: 520,
 			ease: 'inOutQuad',
 			onRender: (self) => {
-				if (pct) pct.textContent = String(Math.max(8, Math.round(self.progress * 86)));
+				if (pct) pct.textContent = String(Math.max(12, Math.round(self.progress * 90)));
 			}
 		});
 	}
 
-	await Promise.race([
-		Promise.all([document.fonts?.ready ?? Promise.resolve(), loadHeroImage(), sleep(980), intro]),
-		sleep(2200)
-	]);
+	// Warm hero bitmap under the curtain so landing isn't empty when it lifts.
+	await Promise.race([Promise.all([warmHeroImage(520), sleep(360)]), sleep(1000)]);
 
 	if (bar) {
 		await animate(bar, {
 			scaleX: 1,
-			duration: 280,
+			duration: 160,
 			ease: 'outExpo',
 			onRender: () => {
 				if (pct) pct.textContent = '100';
@@ -442,10 +375,12 @@ export async function playBoot(root: HTMLElement): Promise<void> {
 		});
 	} else if (pct) pct.textContent = '100';
 
-	await sleep(140);
-	await animate(root, { y: '-110%', duration: 720, ease: 'inOutExpo' });
-	split?.revert();
-	done();
+	// Unlock page so hero can animate under the sliding curtain.
+	document.documentElement.classList.remove('is-booting');
+	boot.locked = false;
+
+	await animate(root, { y: '-110%', duration: 420, ease: 'inOutExpo' });
+	root.remove();
 }
 
 export function playPop(el: HTMLElement): () => void {

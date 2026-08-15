@@ -25,7 +25,7 @@
 					>
 				</li>
 				<li>
-					<a class="footer-link" href="/kontakt"><Icon name="send" size={16} /> Dopyt</a>
+					<a class="footer-link" href="/rezervacie#dopyt"><Icon name="send" size={16} /> Dopyt</a>
 				</li>
 				<li>
 					<a class="text-foam no-underline hover:text-paprika" href="/rezervacne-podmienky"

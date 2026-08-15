@@ -1,24 +1,23 @@
 <script lang="ts">
 	import Icon from '$lib/components/Icon.svelte';
-	import InquiryForm from '$lib/components/InquiryForm.svelte';
 	import PageHero from '$lib/components/PageHero.svelte';
 	import Seo from '$lib/components/Seo.svelte';
 	import { site } from '$lib/data/site';
 </script>
 
 <Seo
-	title="Kontakt — SEBA BAND | Rezervácia termínu"
-	description="Kontaktujte SEBA BAND — telefón, e-mail, Facebook, TikTok, YouTube. Rezervácia termínu telefonicky alebo dopytom."
+	title="Kontakt — SEBA BAND"
+	description="Kontaktujte SEBA BAND — telefón, e-mail, Facebook, TikTok, YouTube. Termín rezervujte na stránke Rezervácie."
 />
 
 <PageHero
 	kicker="Kontakt"
-	title="Zavolajte si termín"
-	lede="Pôsobíme na Slovensku aj v zahraničí. Cestujeme za vami — sálu nemáme, parket áno."
+	title="Sme na linke"
+	lede="Zavolajte alebo napíšte. Termín a dopyt nájdete v rezerváciách."
 />
 
-<section class="mx-auto grid max-w-[90rem] gap-8 px-4 py-16 md:grid-cols-12 md:px-7 md:py-20">
-	<div class="space-y-4 md:col-span-5" data-in-stagger>
+<section class="mx-auto max-w-[90rem] px-4 py-16 md:px-7 md:py-20">
+	<div class="mx-auto grid max-w-3xl gap-4" data-in-stagger>
 		<a class="contact-card contact-card-hot" href="tel:{site.phone}">
 			<span class="icon-mark"><Icon name="phone" /></span>
 			<span>
@@ -51,8 +50,8 @@
 				><Icon name="youtube" size={18} /> YouTube</a
 			>
 		</div>
-	</div>
-	<div class="md:col-span-7" data-in data-in-delay="60">
-		<InquiryForm />
+		<a class="btn-hot mt-4 w-full sm:w-auto" href="/rezervacie#dopyt"
+			><Icon name="send" size={18} /> Rezervácia / dopyt</a
+		>
 	</div>
 </section>

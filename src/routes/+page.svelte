@@ -29,28 +29,28 @@
 <Seo title="SEBA BAND — Živá hudba na svadby, plesy a oslavy" description={site.description} />
 
 <section bind:this={landing} class="relative overflow-hidden pt-20">
-	<div class="mx-auto grid max-w-[90rem] items-start gap-6 px-4 pb-10 md:grid-cols-12 md:px-7 md:pb-12">
+	<div class="js-hero mx-auto grid max-w-[90rem] items-start gap-6 px-4 pb-10 md:grid-cols-12 md:px-7 md:pb-12">
 		<div class="md:col-span-6 lg:col-span-5">
-			<p class="kicker js-await js-hero-kicker">{site.kicker}</p>
+			<p class="kicker js-hero-kicker">{site.kicker}</p>
 			<h1 class="display js-hero-title mt-4 text-[18vw] text-ink sm:text-8xl md:text-[7.25rem]">
 				SEBA<br /><span class="text-paprika">BAND</span>
 			</h1>
-			<p class="js-await js-hero-lede mt-5 max-w-md text-lg font-light text-ink-soft md:text-xl">
+			<p class="js-hero-lede mt-5 max-w-md text-lg font-light text-ink-soft md:text-xl">
 				Šesť členov. Jedna rodina. Parket plný od prvej pesničky — svadby, plesy a zábavy na Slovensku
 				aj v zahraničí.
 			</p>
-			<div class="js-await js-hero-ctas mt-8 flex flex-wrap gap-3">
+			<div class="js-hero-ctas mt-8 flex flex-wrap gap-3">
 				<a class="btn-hot" href="tel:{site.phone}"><Icon name="phone" size={18} /> Rezervácia</a>
 				<a class="btn-ink" href="/videa">Videá</a>
 			</div>
 			<p
-				class="js-await js-hero-region mt-5 font-display text-sm font-extrabold tracking-wider text-dust uppercase"
+				class="js-hero-region mt-5 font-display text-sm font-extrabold tracking-wider text-dust uppercase"
 			>
 				{site.region}
 			</p>
 		</div>
 
-		<div class="js-await js-hero-photo relative md:col-span-6 md:-mt-2 lg:col-span-7 lg:-mt-8">
+		<div class="js-hero-photo relative md:col-span-6 md:-mt-2 lg:col-span-7 lg:-mt-8">
 			<SmartImage
 				src="/images/hero-band.jpg"
 				alt="Členovia kapely SEBA BAND v elegantnom čiernom oblečení"
@@ -58,7 +58,7 @@
 				height={1050}
 				priority
 				sizes="(min-width: 768px) 50vw, 100vw"
-				class="block -rotate-2 overflow-hidden border-2 border-ink shadow-[12px_12px_0_var(--color-paprika)]"
+				class="block -rotate-2 overflow-hidden border-2 border-ink bg-cream shadow-[12px_12px_0_var(--color-paprika)]"
 				imgClass="aspect-[4/3] w-full object-cover object-[50%_8%]"
 			/>
 		</div>
@@ -185,7 +185,7 @@
 				class="btn-ink !border-foam !text-foam hover:!bg-foam hover:!text-paprika"
 				href="tel:{site.phone}"><Icon name="phone" size={18} /> {site.phoneDisplay}</a
 			>
-			<a class="btn-ink !border-foam !bg-foam !text-ink" href="/kontakt"
+			<a class="btn-ink !border-foam !bg-foam !text-ink" href="/rezervacie#dopyt"
 				><Icon name="send" size={18} /> Dopyt</a
 			>
 		</div>
