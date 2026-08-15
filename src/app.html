@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="sk">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="theme-color" content="#f3ead8" />
+		<script>
+			(function () {
+				try {
+					var t = localStorage.getItem('seba-theme');
+					if (t !== 'light' && t !== 'dark') {
+						t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+					}
+					document.documentElement.setAttribute('data-theme', t);
+					document.documentElement.style.colorScheme = t;
+					if (t === 'dark') {
+						document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0c0b0a');
+					}
+					document.documentElement.classList.add('is-booting');
+				} catch (e) {}
+			})();
+		</script>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,500&display=swap"
+			rel="stylesheet"
+		/>
+		<link rel="preload" as="image" href="/images/hero-band.webp" type="image/webp" />
+		<style>
+			#boot {
+				position: fixed;
+				inset: 0;
+				z-index: 92;
+				display: grid;
+				place-items: center;
+				overflow: hidden;
+				background: #e23a1b;
+				background-image: radial-gradient(rgba(23, 18, 14, 0.22) 0.75px, transparent 0.9px);
+				background-size: 6px 6px;
+				color: #fff8ec;
+				text-align: center;
+			}
+			[data-theme='dark'] #boot {
+				background-color: #ff4d2e;
+			}
+			#boot .boot-kicker {
+				margin: 0;
+				font-family: 'Big Shoulders Display', Impact, sans-serif;
+				font-weight: 800;
+				letter-spacing: 0.28em;
+				text-transform: uppercase;
+				font-size: 0.95rem;
+			}
+			#boot .boot-title {
+				margin: 0.4rem 0 0;
+				font-family: 'Big Shoulders Display', Impact, sans-serif;
+				font-weight: 900;
+				letter-spacing: -0.05em;
+				line-height: 0.78;
+				text-transform: uppercase;
+				font-size: clamp(4.4rem, 18vw, 12rem);
+			}
+			#boot .boot-meta {
+				display: flex;
+				align-items: baseline;
+				justify-content: space-between;
+				gap: 1rem;
+				width: min(22rem, 78vw);
+				margin: 1.6rem auto 0;
+				font-family: 'Big Shoulders Display', Impact, sans-serif;
+				font-weight: 800;
+				letter-spacing: 0.16em;
+				text-transform: uppercase;
+				font-size: 0.85rem;
+			}
+			#boot .boot-track {
+				width: min(22rem, 78vw);
+				height: 10px;
+				margin: 0.7rem auto 0;
+				border: 2px solid #17120e;
+				background: rgba(23, 18, 14, 0.18);
+				overflow: hidden;
+			}
+			#boot .boot-bar {
+				display: block;
+				height: 100%;
+				width: 100%;
+				background: #fff8ec;
+				transform: scaleX(0.12);
+				transform-origin: left center;
+				animation: boot-load 1.15s ease-in-out infinite alternate;
+			}
+			#boot .boot-stamp {
+				position: absolute;
+				right: 9%;
+				bottom: 11%;
+				border: 3px solid #fff8ec;
+				padding: 0.35rem 0.7rem;
+				font-family: 'Big Shoulders Display', Impact, sans-serif;
+				font-weight: 800;
+				letter-spacing: 0.2em;
+				text-transform: uppercase;
+				transform: rotate(-8deg);
+			}
+			@keyframes boot-load {
+				from {
+					transform: scaleX(0.12);
+				}
+				to {
+					transform: scaleX(0.68);
+				}
+			}
+			html.is-booting {
+				overflow: hidden;
+			}
+			@media (prefers-reduced-motion: reduce) {
+				#boot {
+					display: none !important;
+				}
+				html.is-booting {
+					overflow: auto;
+				}
+			}
+		</style>
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover" data-sveltekit-preload-code="hover">
+		<div id="boot" aria-hidden="true">
+			<div>
+				<p class="boot-kicker js-boot-kicker">Naživo</p>
+				<p class="boot-title js-boot-title">SEBA BAND</p>
+				<div class="boot-meta">
+					<span>Ladenie</span>
+					<span><span class="js-boot-pct">12</span>%</span>
+				</div>
+				<div class="boot-track">
+					<i class="boot-bar js-boot-bar"></i>
+				</div>
+			</div>
+			<span class="boot-stamp js-boot-stamp">Live</span>
+		</div>
+		<noscript><style>#boot{display:none!important}html.is-booting{overflow:auto}</style></noscript>
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>
