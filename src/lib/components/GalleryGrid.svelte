@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Lightbox from '$lib/components/Lightbox.svelte';
 	import SmartImage from '$lib/components/SmartImage.svelte';
-	import { playGallery } from '$lib/motion';
+	import { afterPaint } from '$lib/motion-prefs';
 	import type { GalleryItem } from '$lib/data/gallery';
 
 	let { items, limit }: { items: GalleryItem[]; limit?: number } = $props();
@@ -14,7 +14,11 @@
 	$effect(() => {
 		void visible;
 		if (!grid) return;
-		return playGallery(grid);
+		return afterPaint(() => {
+			void import('$lib/motion').then((m) => {
+				if (grid) m.playGallery(grid);
+			});
+		});
 	});
 
 	const spanClass: Record<GalleryItem['span'], string> = {

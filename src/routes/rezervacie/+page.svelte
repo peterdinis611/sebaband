@@ -7,11 +7,13 @@
 	import Seo from '$lib/components/Seo.svelte';
 	import { pages } from '$lib/data/seo';
 	import { site } from '$lib/data/site';
+	import { readSearchParam } from '$lib/query';
 
 	let selected = $state('');
 
 	$effect(() => {
-		const datum = page.url.searchParams.get('datum');
+		void page.url.pathname;
+		const datum = readSearchParam('datum');
 		if (datum) selected = datum;
 	});
 </script>

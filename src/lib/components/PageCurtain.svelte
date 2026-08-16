@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onNavigate } from '$app/navigation';
 	import { nav } from '$lib/data/site';
-	import { coverPageTurn, prefersReducedMotion, revealPageTurn } from '$lib/motion';
+	import { prefersLightMotion } from '$lib/motion-prefs';
 
 	const order = [
 		'/',
@@ -34,19 +34,22 @@
 		const from = navigation.from?.url.pathname;
 		const to = navigation.to?.url.pathname;
 		if (!from || !to || from === to) return;
-		if (prefersReducedMotion() || !root) return;
+		if (prefersLightMotion() || !root) return;
 
 		const direction: 1 | -1 = indexFor(to) >= indexFor(from) ? 1 : -1;
 		const label = labelFor(to);
+		const el = root;
 
-		return coverPageTurn(root, { direction, label }).then(
-			() => () => {
-				void revealPageTurn(root!, { direction });
-			},
-			() => {
-				if (root) root.dataset.on = '0';
-				document.documentElement.classList.remove('is-turning');
-			}
+		return import('$lib/motion').then(({ coverPageTurn, revealPageTurn }) =>
+			coverPageTurn(el, { direction, label }).then(
+				() => () => {
+					void revealPageTurn(el, { direction });
+				},
+				() => {
+					el.dataset.on = '0';
+					document.documentElement.classList.remove('is-turning');
+				}
+			)
 		);
 	});
 </script>

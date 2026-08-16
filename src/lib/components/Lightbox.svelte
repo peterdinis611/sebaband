@@ -3,7 +3,7 @@
 	import Icon from '$lib/components/Icon.svelte';
 	import SmartImage from '$lib/components/SmartImage.svelte';
 	import type { GalleryItem } from '$lib/data/gallery';
-	import { prefersReducedMotion } from '$lib/motion';
+	import { prefersReducedMotion } from '$lib/motion-prefs';
 	import { portal } from '$lib/portal';
 
 	let {

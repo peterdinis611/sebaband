@@ -16,37 +16,13 @@
 					if (t === 'dark') {
 						document.querySelector('meta[name="theme-color"]').setAttribute('content', '#100e0c');
 					}
-					var path = location.pathname || '';
-					var q = location.search || '';
-					var isAnalytics = path.indexOf('/analytics') === 0;
-					var isPreview = q.indexOf('preview=1') !== -1;
-					var skipBoot =
-						isAnalytics ||
-						isPreview ||
-						sessionStorage.getItem('seba-booted') === '1' ||
-						window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-					if (isAnalytics) {
+					if ((location.pathname || '').indexOf('/analytics') === 0) {
 						document.documentElement.classList.add('is-analytics');
-					}
-					if (skipBoot) {
-						document.documentElement.classList.add('boot-skip');
-					} else {
-						document.documentElement.classList.add('is-booting');
 					}
 				} catch (e) {}
 			})();
 		</script>
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
-		<link
-			rel="preload"
-			as="style"
-			href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&display=swap"
-		/>
-		<link
-			rel="stylesheet"
-			href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&display=swap"
-		/>
+		<link rel="stylesheet" href="/fonts.css" />
 		<script>
 			(function () {
 				try {
@@ -55,12 +31,37 @@
 					var light =
 						path.indexOf('/analytics') === 0 || q.indexOf('preview=1') !== -1;
 					if (!light) {
+						var f1 = document.createElement('link');
+						f1.rel = 'preload';
+						f1.as = 'font';
+						f1.type = 'font/woff2';
+						f1.href = '/fonts/big-shoulders-display-latin-900-normal.woff2';
+						f1.crossOrigin = 'anonymous';
+						document.head.appendChild(f1);
+						var f2 = document.createElement('link');
+						f2.rel = 'preload';
+						f2.as = 'font';
+						f2.type = 'font/woff2';
+						f2.href = '/fonts/fraunces-latin-300-normal.woff2';
+						f2.crossOrigin = 'anonymous';
+						document.head.appendChild(f2);
+						var la = document.createElement('link');
+						la.rel = 'preload';
+						la.as = 'image';
+						la.type = 'image/avif';
+						la.fetchPriority = 'high';
+						la.imageSrcset =
+							'/images/hero-band-sm.avif 720w, /images/hero-band-md.avif 1100w, /images/hero-band.avif 1400w';
+						la.imageSizes = '(min-width: 768px) 50vw, 100vw';
+						document.head.appendChild(la);
 						var l1 = document.createElement('link');
 						l1.rel = 'preload';
 						l1.as = 'image';
-						l1.href = '/images/hero-band.webp';
 						l1.type = 'image/webp';
 						l1.fetchPriority = 'high';
+						l1.imageSrcset =
+							'/images/hero-band-sm.webp 720w, /images/hero-band-md.webp 1100w, /images/hero-band.webp 1400w';
+						l1.imageSizes = '(min-width: 768px) 50vw, 100vw';
 						document.head.appendChild(l1);
 						var l2 = document.createElement('link');
 						l2.rel = 'preload';
@@ -73,7 +74,6 @@
 			})();
 		</script>
 		<style>
-			/* Keep first paint filled — Impact until webfonts arrive */
 			.display,
 			.font-display,
 			.kicker,
@@ -81,121 +81,10 @@
 			.btn-ink {
 				font-family: 'Big Shoulders Display', Impact, 'Arial Narrow', sans-serif;
 			}
-			#boot {
-				position: fixed;
-				inset: 0;
-				z-index: 92;
-				display: grid;
-				place-items: center;
-				overflow: hidden;
-				background: #e23a1b;
-				background-image: radial-gradient(rgba(23, 18, 14, 0.22) 0.75px, transparent 0.9px);
-				background-size: 6px 6px;
-				color: #fff8ec;
-				text-align: center;
-			}
-			[data-theme='dark'] #boot {
-				background-color: #ff4d2e;
-			}
-			#boot .boot-kicker {
-				margin: 0;
-				font-family: 'Big Shoulders Display', Impact, sans-serif;
-				font-weight: 800;
-				letter-spacing: 0.28em;
-				text-transform: uppercase;
-				font-size: 0.95rem;
-			}
-			#boot .boot-title {
-				margin: 0.4rem 0 0;
-				font-family: 'Big Shoulders Display', Impact, sans-serif;
-				font-weight: 900;
-				letter-spacing: -0.05em;
-				line-height: 0.78;
-				text-transform: uppercase;
-				font-size: clamp(4.4rem, 18vw, 12rem);
-			}
-			#boot .boot-meta {
-				display: flex;
-				align-items: baseline;
-				justify-content: space-between;
-				gap: 1rem;
-				width: min(22rem, 78vw);
-				margin: 1.6rem auto 0;
-				font-family: 'Big Shoulders Display', Impact, sans-serif;
-				font-weight: 800;
-				letter-spacing: 0.16em;
-				text-transform: uppercase;
-				font-size: 0.85rem;
-			}
-			#boot .boot-track {
-				width: min(22rem, 78vw);
-				height: 10px;
-				margin: 0.7rem auto 0;
-				border: 2px solid #17120e;
-				background: rgba(23, 18, 14, 0.18);
-				overflow: hidden;
-			}
-			#boot .boot-bar {
-				display: block;
-				height: 100%;
-				width: 100%;
-				background: #fff8ec;
-				transform: scaleX(0.12);
-				transform-origin: left center;
-			}
-			#boot .boot-stamp {
-				position: absolute;
-				right: 9%;
-				bottom: 11%;
-				border: 3px solid #fff8ec;
-				padding: 0.35rem 0.7rem;
-				font-family: 'Big Shoulders Display', Impact, sans-serif;
-				font-weight: 800;
-				letter-spacing: 0.2em;
-				text-transform: uppercase;
-				transform: rotate(-8deg);
-			}
-			html.is-booting {
-				overflow: hidden;
-			}
-			html.boot-skip #boot {
-				display: none !important;
-			}
-			@media (prefers-reduced-motion: reduce) {
-				#boot {
-					display: none !important;
-				}
-				html.is-booting {
-					overflow: auto;
-				}
-			}
 		</style>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover" data-sveltekit-preload-code="hover">
-		<div id="boot" aria-hidden="true">
-			<div>
-				<p class="boot-kicker js-boot-kicker">Naživo</p>
-				<p class="boot-title js-boot-title">SEBA BAND</p>
-				<div class="boot-meta">
-					<span>Ladenie</span>
-					<span><span class="js-boot-pct">12</span>%</span>
-				</div>
-				<div class="boot-track">
-					<i class="boot-bar js-boot-bar"></i>
-				</div>
-			</div>
-			<span class="boot-stamp js-boot-stamp">Live</span>
-		</div>
-		<script>
-			(function () {
-				if (document.documentElement.classList.contains('boot-skip')) {
-					var b = document.getElementById('boot');
-					if (b) b.remove();
-				}
-			})();
-		</script>
-		<noscript><style>#boot{display:none!important}html.is-booting{overflow:auto}</style></noscript>
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>

@@ -1,16 +1,12 @@
 <script lang="ts">
-	import BookingCalendar from '$lib/components/BookingCalendar.svelte';
-	import GalleryGrid from '$lib/components/GalleryGrid.svelte';
 	import Reveal from '$lib/components/Reveal.svelte';
 	import Seo from '$lib/components/Seo.svelte';
 	import SmartImage from '$lib/components/SmartImage.svelte';
-	import VideoGrid from '$lib/components/VideoGrid.svelte';
+	import WhenVisible from '$lib/components/WhenVisible.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import { gallery } from '$lib/data/gallery';
 	import { pages } from '$lib/data/seo';
 	import { site } from '$lib/data/site';
-	import { boot } from '$lib/boot.svelte';
-	import { playLanding } from '$lib/motion';
 
 	const stats = [
 		{ value: '6', label: 'členov' },
@@ -18,18 +14,11 @@
 		{ value: 'SK + EU', label: 'pôsobenie' },
 		{ value: 'Live', label: 'vlastná technika' }
 	];
-
-	let landing = $state<HTMLElement>();
-
-	$effect(() => {
-		if (!landing || boot.locked) return;
-		return playLanding(landing);
-	});
 </script>
 
 <Seo title={pages.home.title} description={pages.home.description} keywords={pages.home.keywords} />
 
-<section bind:this={landing} class="relative overflow-x-clip pt-28 md:pt-32">
+<section class="relative overflow-x-clip pt-28 md:pt-32">
 	<div class="js-hero mx-auto grid max-w-[90rem] items-start gap-6 px-4 pb-10 md:grid-cols-12 md:px-7 md:pb-12">
 		<div class="js-hero-copy md:col-span-6 lg:col-span-5">
 			<p class="kicker js-hero-kicker">{site.kicker}</p>
@@ -150,7 +139,11 @@
 			</div>
 			<a class="btn-ink" href="/galeria">Viac fotiek</a>
 		</div>
-		<GalleryGrid items={gallery} limit={4} />
+		<WhenVisible minHeight="18rem">
+			{#await import('$lib/components/GalleryGrid.svelte') then { default: GalleryGrid }}
+				<GalleryGrid items={gallery} limit={4} />
+			{/await}
+		</WhenVisible>
 	</div>
 </section>
 
@@ -164,7 +157,11 @@
 			<a class="btn-hot" href="/videa">Všetky klipy</a>
 		</div>
 		<div class="mt-10">
-			<VideoGrid featured />
+			<WhenVisible minHeight="14rem">
+				{#await import('$lib/components/VideoGrid.svelte') then { default: VideoGrid }}
+					<VideoGrid featured />
+				{/await}
+			</WhenVisible>
 		</div>
 	</div>
 </section>
@@ -180,7 +177,11 @@
 			<a class="btn-hot mt-8" href="/rezervacie">Celý kalendár</a>
 		</div>
 		<div class="md:col-span-8">
-			<BookingCalendar linkToBooking />
+			<WhenVisible minHeight="22rem">
+				{#await import('$lib/components/BookingCalendar.svelte') then { default: BookingCalendar }}
+					<BookingCalendar linkToBooking />
+				{/await}
+			</WhenVisible>
 		</div>
 	</div>
 </section>

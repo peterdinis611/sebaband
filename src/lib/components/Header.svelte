@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { nav, site } from '$lib/data/site';
-	import { playHeader, playMobileNav } from '$lib/motion';
+	import { afterPaint } from '$lib/motion-prefs';
 	import { theme, toggleTheme } from '$lib/theme.svelte';
 	import Icon from '$lib/components/Icon.svelte';
-	import { boot } from '$lib/boot.svelte';
 
 	let open = $state(false);
 	let compact = $state(false);
@@ -12,13 +11,21 @@
 	let mobileNav = $state<HTMLElement>();
 
 	$effect(() => {
-		if (!headerEl || boot.locked) return;
-		return playHeader(headerEl);
+		if (!headerEl) return;
+		return afterPaint(() => {
+			void import('$lib/motion').then((m) => {
+				if (headerEl) m.playHeader(headerEl);
+			});
+		});
 	});
 
 	$effect(() => {
 		if (!open || !mobileNav) return;
-		return playMobileNav(mobileNav);
+		let stop = () => {};
+		void import('$lib/motion').then((m) => {
+			if (mobileNav) stop = m.playMobileNav(mobileNav);
+		});
+		return () => stop();
 	});
 
 	$effect(() => {

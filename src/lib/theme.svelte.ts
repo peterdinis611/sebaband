@@ -1,4 +1,4 @@
-import { playThemeWipe, prefersReducedMotion } from '$lib/motion';
+import { prefersReducedMotion } from '$lib/motion-prefs';
 
 export type ThemeName = 'light' | 'dark';
 
@@ -44,6 +44,7 @@ export async function toggleTheme(origin?: HTMLElement) {
 
 	flipping = true;
 	try {
+		const { playThemeWipe } = await import('$lib/motion');
 		await playThemeWipe(origin, next, commit);
 	} finally {
 		flipping = false;

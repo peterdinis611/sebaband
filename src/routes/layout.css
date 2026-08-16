@@ -132,6 +132,12 @@ body {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+@media (max-width: 767px) {
+	.grain {
+		display: none;
+	}
+}
+
 [data-theme='dark'] .grain {
 	mix-blend-mode: soft-light;
 	opacity: 0.14;
@@ -495,13 +501,57 @@ footer .kicker {
 	}
 }
 
-.js-hero,
-.js-await,
-.js-stat,
+/* Below-fold: visible by default (no JS). Desktop + view() = CSS scroll reveal. */
 [data-in],
 [data-in-stagger] > *,
 .js-gallery > * {
-	opacity: 0;
+	opacity: 1;
+}
+
+@keyframes data-in-reveal {
+	from {
+		opacity: 0;
+		transform: translateY(1.15rem);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@supports (animation-timeline: view()) {
+	@media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
+		[data-in] {
+			opacity: 0;
+			transform: translateY(1.15rem);
+			animation: data-in-reveal 0.7s ease-out both;
+			animation-timeline: view();
+			animation-range: entry 0% entry 42%;
+		}
+
+		[data-in-stagger] > * {
+			opacity: 0;
+			transform: translateY(0.9rem);
+			animation: data-in-reveal 0.6s ease-out both;
+			animation-timeline: view();
+			animation-range: entry 0% entry 40%;
+		}
+
+		[data-in-stagger] > *:nth-child(2) {
+			animation-delay: 0.05s;
+		}
+		[data-in-stagger] > *:nth-child(3) {
+			animation-delay: 0.1s;
+		}
+
+		.js-gallery > * {
+			opacity: 0;
+			transform: translateY(1rem);
+			animation: data-in-reveal 0.65s ease-out both;
+			animation-timeline: view();
+			animation-range: entry 0% entry 38%;
+		}
+	}
 }
 
 html.is-analytics [data-in],
@@ -510,6 +560,7 @@ html.is-analytics .js-gallery > * {
 	opacity: 1;
 	transform: none;
 	filter: none;
+	animation: none;
 }
 
 .hero-title .char {
@@ -549,8 +600,7 @@ html.is-analytics .js-gallery > * {
 	will-change: transform, opacity;
 }
 
-html.is-turning,
-html.is-booting {
+html.is-turning {
 	overflow: hidden;
 }
 
@@ -831,9 +881,6 @@ html.is-booting {
 	.reveal,
 	.stamp-in,
 	.marquee-track,
-	.js-hero,
-	.js-await,
-	.js-stat,
 	[data-in],
 	[data-in-stagger] > *,
 	.js-gallery > * {
@@ -853,8 +900,7 @@ html.is-booting {
 		scroll-behavior: auto;
 	}
 
-	html.is-turning,
-	html.is-booting {
+	html.is-turning {
 		overflow: auto;
 	}
 }

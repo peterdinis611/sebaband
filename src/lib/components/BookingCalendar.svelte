@@ -10,7 +10,7 @@
 	} from '$lib/data/bookings';
 	import { site } from '$lib/data/site';
 	import Icon from '$lib/components/Icon.svelte';
-	import { playCalendarDays, pulsePick } from '$lib/motion';
+	import { afterPaint } from '$lib/motion-prefs';
 
 	let {
 		selected = $bindable(''),
@@ -36,7 +36,11 @@
 	$effect(() => {
 		void cells;
 		if (!grid) return;
-		return playCalendarDays(grid);
+		return afterPaint(() => {
+			void import('$lib/motion').then((m) => {
+				if (grid) m.playCalendarDays(grid);
+			});
+		});
 	});
 
 	function prev() {
@@ -56,7 +60,7 @@
 	async function pick(iso: string, el: HTMLElement) {
 		if (isPast(iso) || isBooked(iso)) return;
 		selected = iso;
-		pulsePick(el);
+		void import('$lib/motion').then((m) => m.pulsePick(el));
 		if (linkToBooking) {
 			await goto(`/rezervacie?datum=${iso}#dopyt`);
 		}

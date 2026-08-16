@@ -6,96 +6,53 @@ import {
 	set,
 	stagger
 } from 'animejs';
-import { boot } from '$lib/boot.svelte';
+import { prefersLightMotion, prefersReducedMotion } from '$lib/motion-prefs';
 
-export function prefersReducedMotion(): boolean {
-	return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
+export { prefersLightMotion, prefersReducedMotion } from '$lib/motion-prefs';
 
 function showNow(els: Iterable<Element>) {
 	for (const el of els) (el as HTMLElement).style.opacity = '1';
 }
 
 export function playLanding(root: HTMLElement): () => void {
-	if (prefersReducedMotion()) {
-		showNow(root.querySelectorAll('.js-hero, .js-await, .js-stat'));
-		return () => {};
-	}
+	// Hero stays painted for LCP — only soft transform polish after paint.
+	if (prefersReducedMotion()) return () => {};
 
 	const hero = root.querySelector<HTMLElement>('.js-hero');
 	const stats = [...root.querySelectorAll<HTMLElement>('.js-stat')];
-	const img = root.querySelector<HTMLImageElement>('.js-hero-photo img');
+	const light = prefersLightMotion();
 
-	let started = false;
-	let timer = 0;
-	const cleanups: Array<() => void> = [];
-
-	const start = () => {
-		if (started) return;
-		started = true;
-		window.clearTimeout(timer);
-
-		if (hero) {
-			const copy = hero.querySelector('.js-hero-copy');
-			const photo = hero.querySelector('.js-hero-photo');
-			if (copy) set(copy, { opacity: 0, y: 28 });
-			if (photo) set(photo, { opacity: 0, y: 40, scale: 1.06 });
-			set(hero, { opacity: 1 });
-			if (copy) {
-				animate(copy, {
-					opacity: 1,
-					y: 0,
-					duration: 640,
-					ease: 'outQuart'
-				});
-			}
-			if (photo) {
-				animate(photo, {
-					opacity: 1,
-					y: 0,
-					scale: 1,
-					duration: 780,
-					delay: 80,
-					ease: 'outQuart'
-				});
-			}
-		} else {
-			showNow(root.querySelectorAll('.js-await'));
-		}
-
-		if (stats.length) {
-			animate(stats, {
-				opacity: [0, 1],
-				y: [12, 0],
-				duration: 420,
-				delay: stagger(40),
-				ease: 'outExpo'
+	if (hero && !light) {
+		const copy = hero.querySelector('.js-hero-copy');
+		const photo = hero.querySelector('.js-hero-photo');
+		if (copy) {
+			animate(copy, {
+				y: [14, 0],
+				duration: 480,
+				ease: 'outQuart'
 			});
 		}
-	};
-
-	// Reveal only after hero bitmap is ready (or short failsafe) — no lone title over empty photo.
-	if (img && !img.complete) {
-		const onReady = () => start();
-		img.addEventListener('load', onReady, { once: true });
-		img.addEventListener('error', onReady, { once: true });
-		cleanups.push(() => {
-			img.removeEventListener('load', onReady);
-			img.removeEventListener('error', onReady);
-		});
-		timer = window.setTimeout(start, 480);
-	} else if (img?.decode) {
-		void img.decode().then(start).catch(start);
-		timer = window.setTimeout(start, 480);
-	} else {
-		start();
+		if (photo) {
+			animate(photo, {
+				y: [18, 0],
+				scale: [1.025, 1],
+				duration: 560,
+				delay: 40,
+				ease: 'outQuart'
+			});
+		}
 	}
 
-	return () => {
-		window.clearTimeout(timer);
-		cleanups.forEach((fn) => fn());
-		showNow(root.querySelectorAll('.js-hero, .js-await, .js-stat'));
-	};
+	if (stats.length && !light) {
+		animate(stats, {
+			y: [8, 0],
+			duration: 360,
+			delay: stagger(36),
+			ease: 'outExpo'
+		});
+	}
+
+	return () => {};
 }
 
 export function bindScrollIns(root: ParentNode = document): () => void {
@@ -108,17 +65,18 @@ export function bindScrollIns(root: ParentNode = document): () => void {
 	const groups = [...root.querySelectorAll<HTMLElement>('[data-in-stagger]')];
 	if (!nodes.length && !groups.length) return () => {};
 
+	const light = prefersLightMotion();
 	const observers: Array<{ revert: () => void }> = [];
 
 	for (const el of nodes) {
 		const delay = Number(el.dataset.inDelay ?? 0);
-		const y = Number(el.dataset.inY ?? 42);
+		const y = Number(el.dataset.inY ?? (light ? 22 : 42));
 		const anim = animate(el, {
 			opacity: [0, 1],
 			y: [y, 0],
-			rotate: [0.8, 0],
-			filter: ['blur(6px)', 'blur(0px)'],
-			duration: 820,
+			rotate: light ? [0, 0] : [0.8, 0],
+			...(light ? {} : { filter: ['blur(4px)', 'blur(0px)'] }),
+			duration: light ? 520 : 820,
 			delay,
 			ease: 'outQuart',
 			autoplay: onScroll({
@@ -135,10 +93,10 @@ export function bindScrollIns(root: ParentNode = document): () => void {
 		if (!kids.length) continue;
 		const anim = animate(kids, {
 			opacity: [0, 1],
-			y: [32, 0],
-			rotate: [0.6, 0],
-			duration: 700,
-			delay: stagger(70),
+			y: [light ? 18 : 32, 0],
+			rotate: light ? [0, 0] : [0.6, 0],
+			duration: light ? 480 : 700,
+			delay: stagger(light ? 40 : 70),
 			ease: 'outQuart',
 			autoplay: onScroll({
 				target: group,
@@ -154,7 +112,7 @@ export function bindScrollIns(root: ParentNode = document): () => void {
 
 /** Scroll parallax for `[data-parallax="0.15"]` (speed factor). */
 export function bindParallax(root: ParentNode = document): () => void {
-	if (prefersReducedMotion()) return () => {};
+	if (prefersLightMotion()) return () => {};
 
 	const nodes = [...root.querySelectorAll<HTMLElement>('[data-parallax]')];
 	if (!nodes.length) return () => {};
@@ -197,7 +155,7 @@ export function bindParallax(root: ParentNode = document): () => void {
 }
 
 export function bindPunches(root: ParentNode = document): () => void {
-	if (prefersReducedMotion()) return () => {};
+	if (prefersLightMotion()) return () => {};
 
 	const buttons = [
 		...root.querySelectorAll<HTMLElement>(
@@ -254,23 +212,20 @@ export function playHeader(el: HTMLElement): () => void {
 }
 
 export function playPageHero(el: HTMLElement): () => void {
-	if (prefersReducedMotion()) {
-		showNow(el.querySelectorAll('.js-await'));
-		return () => {};
-	}
+	// Titles stay visible for LCP — transform-only polish.
+	if (prefersReducedMotion() || prefersLightMotion()) return () => {};
 
 	const title = el.querySelector('h1');
 	const kicker = el.querySelector('.kicker');
 	const lede = el.querySelector('p:not(.kicker)');
 
 	const tl = createTimeline({ defaults: { ease: 'outQuart' } });
-	if (kicker) tl.add(kicker, { opacity: [0, 1], y: [14, 0], duration: 420 }, 0);
-	if (title) tl.add(title, { opacity: [0, 1], y: [22, 0], filter: ['blur(5px)', 'blur(0px)'], duration: 560 }, 40);
-	if (lede) tl.add(lede, { opacity: [0, 1], y: [16, 0], duration: 480 }, 140);
+	if (kicker) tl.add(kicker, { y: [10, 0], duration: 360 }, 0);
+	if (title) tl.add(title, { y: [14, 0], duration: 480 }, 40);
+	if (lede) tl.add(lede, { y: [10, 0], duration: 400 }, 100);
 	const stamp = el.querySelector('.stamp');
 	if (stamp) {
-		set(stamp, { opacity: 0, scale: 1.35, rotate: -18 });
-		tl.add(stamp, { opacity: 1, scale: 1, rotate: -8, duration: 420 }, 200);
+		tl.add(stamp, { scale: [1.12, 1], rotate: [-14, -8], duration: 380 }, 140);
 	}
 
 	return () => tl.revert();
@@ -370,95 +325,6 @@ export async function revealPageTurn(root: HTMLElement, opts: Pick<PageTurnOpts,
 		set(sheet, { x: 0, rotate: 0 });
 		if (ink) set(ink, { x: 0 });
 		if (slash) set(slash, { x: 0, scaleX: 1 });
-	}
-}
-
-function sleep(ms: number) {
-	return new Promise<void>((resolve) => setTimeout(resolve, ms));
-}
-
-/** Soft-preload hero; never block boot longer than `budgetMs`. */
-function warmHeroImage(budgetMs = 280): Promise<void> {
-	return Promise.race([
-		new Promise<void>((resolve) => {
-			const img = new Image();
-			const done = () => resolve();
-			img.onload = done;
-			img.onerror = done;
-			img.decoding = 'async';
-			img.src = '/images/hero-band.webp';
-			if (typeof img.decode === 'function') {
-				img.decode().then(done).catch(done);
-			}
-		}),
-		sleep(budgetMs)
-	]);
-}
-
-export async function playBoot(root: HTMLElement): Promise<void> {
-	const finish = () => {
-		document.documentElement.classList.remove('is-booting');
-		boot.locked = false;
-		if (root.isConnected) root.remove();
-	};
-
-	if (prefersReducedMotion()) {
-		finish();
-		return;
-	}
-
-	try {
-		const title = root.querySelector('.js-boot-title');
-		const kicker = root.querySelector('.js-boot-kicker');
-		const stamp = root.querySelector('.js-boot-stamp');
-		const bar = root.querySelector<HTMLElement>('.js-boot-bar');
-		const pct = root.querySelector<HTMLElement>('.js-boot-pct');
-
-		if (kicker) set(kicker, { opacity: 0, y: 10 });
-		if (title) set(title, { opacity: 0, y: 18 });
-		if (stamp) set(stamp, { opacity: 0, scale: 1.25, rotate: -18 });
-		if (bar) {
-			bar.style.animation = 'none';
-			set(bar, { scaleX: 0.12 });
-		}
-
-		const intro = createTimeline({ defaults: { ease: 'outExpo' } });
-		if (kicker) intro.add(kicker, { opacity: 1, y: 0, duration: 280 }, 0);
-		if (title) intro.add(title, { opacity: 1, y: 0, duration: 420 }, 40);
-		if (stamp) intro.add(stamp, { opacity: 1, scale: 1, rotate: -8, duration: 320 }, 160);
-
-		if (bar) {
-			void animate(bar, {
-				scaleX: 0.9,
-				duration: 520,
-				ease: 'inOutQuad',
-				onRender: (self) => {
-					if (pct) pct.textContent = String(Math.max(12, Math.round(self.progress * 90)));
-				}
-			});
-		}
-
-		await Promise.race([Promise.all([warmHeroImage(280), sleep(280)]), sleep(700)]);
-
-		if (pct) pct.textContent = '100';
-		if (bar) {
-			await Promise.race([
-				animate(bar, { scaleX: 1, duration: 160, ease: 'outExpo' }),
-				sleep(400)
-			]);
-		}
-
-		document.documentElement.classList.remove('is-booting');
-		boot.locked = false;
-
-		await Promise.race([
-			animate(root, { y: '-110%', duration: 420, ease: 'inOutExpo' }),
-			sleep(700)
-		]);
-	} catch {
-		/* never leave the curtain stuck */
-	} finally {
-		finish();
 	}
 }
 

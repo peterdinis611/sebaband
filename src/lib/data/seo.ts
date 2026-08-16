@@ -51,7 +51,7 @@ export const seoKeywords = [
 export const seo = {
 	locale: 'sk_SK',
 	localeAlt: ['cs_CZ', 'en_US'],
-	ogImage: '/images/hero-band.jpg',
+	ogImage: '/images/hero-band.webp',
 	ogImageAlt: 'Členovia kapely SEBA BAND — rómska live kapela',
 	twitterCard: 'summary_large_image' as const,
 	keywords: seoKeywords.join(', '),
@@ -61,7 +61,7 @@ export const seo = {
 		alternateName: ['Seba Band', 'SEBA Band', 'Sebaband'],
 		url: site.url,
 		logo: `${site.url}/images/logo.webp`,
-		image: `${site.url}/images/hero-band.jpg`,
+		image: `${site.url}/images/hero-band.webp`,
 		description: site.description,
 		foundingDate: String(site.founded),
 		email: site.email,

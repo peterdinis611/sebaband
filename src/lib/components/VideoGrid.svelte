@@ -1,11 +1,17 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { videos } from '$lib/data/videos';
+	import { isPreviewMode } from '$lib/query';
 
 	let { featured = false }: { featured?: boolean } = $props();
 	let playing = $state<string | null>(null);
 	let list = $derived(featured ? videos.slice(0, 3) : videos);
-	const lite = $derived(page.url.searchParams.get('preview') === '1');
+	let lite = $state(false);
+
+	$effect(() => {
+		void page.url.pathname;
+		lite = isPreviewMode();
+	});
 
 	function play(id: string) {
 		if (lite) return;

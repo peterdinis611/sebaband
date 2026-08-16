@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { prefersReducedMotion } from '$lib/motion';
+	import { prefersReducedMotion } from '$lib/motion-prefs';
 	import Icon from '$lib/components/Icon.svelte';
 
 	let visible = $state(false);

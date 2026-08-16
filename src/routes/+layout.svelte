@@ -12,15 +12,20 @@
 	import { bindClickTracking, trackHit } from '$lib/analytics.svelte';
 	import { faqLd, seo } from '$lib/data/seo';
 	import { site } from '$lib/data/site';
-	import { bindParallax, bindPunches, bindScrollIns } from '$lib/motion';
+	import { afterPaint, prefersLightMotion } from '$lib/motion-prefs';
+	import { isPreviewMode } from '$lib/query';
 	import { hydrateTheme } from '$lib/theme.svelte';
 
 	let { children } = $props();
 	let shellEl = $state<HTMLElement>();
+	let isPreview = $state(false);
 
-	const isPreview = $derived(page.url.searchParams.get('preview') === '1');
 	const isAnalytics = $derived(page.url.pathname.startsWith('/analytics'));
 
+	$effect(() => {
+		void page.url.pathname;
+		isPreview = isPreviewMode();
+	});
 	$effect(() => {
 		hydrateTheme();
 	});
@@ -34,16 +39,10 @@
 		};
 	});
 
-	$effect(() => {
-		if (!isAnalytics && !isPreview) return;
-		document.getElementById('boot')?.remove();
-		document.documentElement.classList.remove('is-booting');
-		document.documentElement.classList.add('boot-skip');
-	});
-
 	afterNavigate((navigation) => {
 		const path = navigation.to?.url.pathname;
-		const preview = navigation.to?.url.searchParams.get('preview') === '1';
+		const preview = isPreviewMode();
+		isPreview = preview;
 		if (path && !preview) trackHit(path);
 		if (navigation.to?.url.hash) return;
 		if (!preview) window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
@@ -54,29 +53,27 @@
 		return bindClickTracking(() => page.url.pathname);
 	});
 
+	/** Anime.js only after paint — scroll reveals are CSS view-timeline. */
 	$effect(() => {
 		void page.url.pathname;
-		if (!shellEl || isPreview) return;
+		if (!shellEl || isPreview || isAnalytics) return;
+		if (prefersLightMotion()) return;
 
-		// Analytics: force-visible, no motion (data-in starts at opacity 0)
-		if (isAnalytics) {
-			for (const el of shellEl.querySelectorAll<HTMLElement>(
-				'[data-in], [data-in-stagger] > *, .js-gallery > *'
-			)) {
-				el.style.opacity = '1';
-				el.style.transform = 'none';
-				el.style.filter = 'none';
-			}
-			return;
-		}
+		let cancelled = false;
+		const cleanups: Array<() => void> = [];
 
-		const stopScroll = bindScrollIns(shellEl);
-		const stopParallax = bindParallax(shellEl);
-		const stopPunch = bindPunches(document.body);
+		const cancelIdle = afterPaint(() => {
+			void import('$lib/motion').then((m) => {
+				if (cancelled || !shellEl) return;
+				cleanups.push(m.bindParallax(shellEl));
+				cleanups.push(m.bindPunches(document.body));
+			});
+		});
+
 		return () => {
-			stopScroll();
-			stopParallax();
-			stopPunch();
+			cancelled = true;
+			cancelIdle();
+			cleanups.forEach((fn) => fn());
 		};
 	});
 
@@ -204,7 +201,6 @@
 		display: none !important;
 	}
 
-	/* Hard guarantee: analytics content is never stuck at opacity 0 */
 	:global(html.is-analytics [data-in]),
 	:global(html.is-analytics [data-in-stagger] > *),
 	:global(html.is-analytics .js-gallery > *),
@@ -214,5 +210,6 @@
 		opacity: 1 !important;
 		transform: none !important;
 		filter: none !important;
+		animation: none !important;
 	}
 </style>

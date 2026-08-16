@@ -7,7 +7,6 @@ test.describe('Domov', () => {
 		await expect(page.getByRole('heading', { level: 1 })).toContainText(/BAND/i);
 		await expect(page.getByRole('link', { name: /Rezervácia/i }).first()).toBeVisible();
 		await expect(page.getByRole('link', { name: /Videá/i }).first()).toBeVisible();
-		await expect(page.locator('#boot')).toHaveCount(0);
 	});
 
 	test('ukáže telefón kapely', async ({ page }) => {
