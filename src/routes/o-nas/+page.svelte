@@ -20,17 +20,15 @@
 		<div
 			class="max-md:rotate-0 -rotate-2 overflow-hidden border-2 border-ink shadow-[10px_10px_0_var(--color-paprika)]"
 		>
-			<div data-parallax="0.15" class="will-change-transform">
-				<SmartImage
-					src="/images/hero-band.jpg"
-					alt="Členovia kapely SEBA BAND v elegantnom čiernom oblečení"
-					width={1400}
-					height={1050}
-					sizes="(min-width: 768px) 50vw, 100vw"
-					class="block scale-[1.12]"
-					imgClass="aspect-[4/3] w-full object-cover object-[50%_18%]"
-				/>
-			</div>
+			<SmartImage
+				src="/images/hero-band.jpg"
+				alt="Členovia kapely SEBA BAND v elegantnom čiernom oblečení"
+				width={1400}
+				height={1050}
+				sizes="(min-width: 768px) 50vw, 100vw"
+				class="block scale-[1.12]"
+				imgClass="aspect-[4/3] w-full object-cover object-[50%_18%]"
+			/>
 		</div>
 	</Reveal>
 	<Reveal class="md:col-span-5 md:col-start-8">

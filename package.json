@@ -18,7 +18,8 @@
 		"test:stress": "playwright test -c playwright.stress.config.ts",
 		"test:load": "node scripts/load-stress.mjs",
 		"test:load:heavy": "CONCURRENCY=80 DURATION_MS=45000 node scripts/load-stress.mjs",
-		"images": "node scripts/optimize-images.mjs"
+		"images": "node scripts/optimize-images.mjs",
+		"check:host": "node scripts/check-host.mjs"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",

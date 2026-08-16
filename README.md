@@ -51,7 +51,6 @@ static/images/    # Fotografie (WebP + JPEG)
 | `/rezervacie` | Kalendár termínov |
 | `/kontakt` | Kontakt |
 | `/rezervacne-podmienky` | Podmienky rezervácie |
-| `/analytics` | Interný prehľad (nie je v menu) |
 
 ## Testy (Playwright)
 

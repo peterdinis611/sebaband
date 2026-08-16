@@ -46,18 +46,16 @@
 			<div
 				class="max-md:rotate-0 -rotate-2 overflow-hidden border-2 border-ink bg-cream shadow-[8px_8px_0_var(--color-paprika)] md:shadow-[12px_12px_0_var(--color-paprika)]"
 			>
-				<div data-parallax="0.16" class="will-change-transform">
-					<SmartImage
-						src="/images/hero-band.jpg"
-						alt="Členovia kapely SEBA BAND v elegantnom čiernom oblečení"
-						width={1400}
-						height={1050}
-						priority
-						sizes="(min-width: 768px) 50vw, 100vw"
-						class="block scale-[1.14]"
-						imgClass="aspect-[4/3] w-full object-cover object-[50%_8%]"
-					/>
-				</div>
+				<SmartImage
+					src="/images/hero-band.jpg"
+					alt="Členovia kapely SEBA BAND v elegantnom čiernom oblečení"
+					width={1400}
+					height={1050}
+					priority
+					sizes="(min-width: 768px) 50vw, 100vw"
+					class="block scale-[1.14]"
+					imgClass="aspect-[4/3] w-full object-cover object-[50%_8%]"
+				/>
 			</div>
 		</div>
 	</div>
@@ -89,22 +87,17 @@
 			<div
 				class="max-md:rotate-0 rotate-2 overflow-hidden border-2 border-ink shadow-[10px_10px_0_var(--color-punch)]"
 			>
-				<div data-parallax="0.14" class="will-change-transform">
-					<SmartImage
-						src="/images/img-3497.jpg"
-						alt="Kapela SEBA BAND spoločne pred akciou"
-						width={1400}
-						height={1080}
-						sizes="(min-width: 768px) 45vw, 100vw"
-						class="block scale-[1.12]"
-						imgClass="aspect-[4/5] w-full object-cover object-top"
-					/>
-				</div>
+				<SmartImage
+					src="/images/img-3497.jpg"
+					alt="Kapela SEBA BAND spoločne pred akciou"
+					width={1400}
+					height={1080}
+					sizes="(min-width: 768px) 45vw, 100vw"
+					class="block scale-[1.12]"
+					imgClass="aspect-[4/5] w-full object-cover object-top"
+				/>
 			</div>
-			<div
-				class="absolute bottom-2 left-2 md:-bottom-6 md:-left-4"
-				data-parallax="0.05"
-			>
+			<div class="absolute bottom-2 left-2 md:-bottom-6 md:-left-4">
 				<div
 					class="border-2 border-ink bg-paprika px-4 py-3 text-foam shadow-[6px_6px_0_var(--color-punch)] md:px-5 md:py-4"
 				>
@@ -230,20 +223,18 @@
 
 <section class="relative overflow-hidden" data-in>
 	<div class="absolute inset-0 overflow-hidden" aria-hidden="true">
-		<div data-parallax="0.28" class="absolute inset-[-12%] will-change-transform">
-			<SmartImage
-				src="/images/img-3496.jpg"
-				alt=""
-				width={1400}
-				height={1050}
-				sizes="100vw"
-				class="h-full w-full"
-				imgClass="h-full w-full object-cover object-[50%_20%]"
-			/>
-		</div>
+		<SmartImage
+			src="/images/img-3496.jpg"
+			alt=""
+			width={1400}
+			height={1050}
+			sizes="100vw"
+			class="h-full w-full"
+			imgClass="h-full w-full object-cover object-[50%_20%] scale-105"
+		/>
 	</div>
 	<div class="absolute inset-0 cta-band-scrim bg-paprika/88"></div>
-	<div class="relative mx-auto max-w-3xl px-4 py-20 text-center text-foam md:py-28" data-parallax="0.06">
+	<div class="relative mx-auto max-w-3xl px-4 py-20 text-center text-foam md:py-28">
 		<p class="stamp !border-foam !text-foam">Termín</p>
 		<h2 class="display mt-6 text-5xl md:text-7xl">Zavolajte nám</h2>
 		<p class="mt-4 text-lg font-light text-foam/90">Preberieme program vašej akcie. Bez omáčky.</p>

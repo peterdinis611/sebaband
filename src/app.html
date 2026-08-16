@@ -16,60 +16,49 @@
 					if (t === 'dark') {
 						document.querySelector('meta[name="theme-color"]').setAttribute('content', '#100e0c');
 					}
-					if ((location.pathname || '').indexOf('/analytics') === 0) {
-						document.documentElement.classList.add('is-analytics');
-					}
 				} catch (e) {}
 			})();
 		</script>
-		<link rel="stylesheet" href="/fonts.css" />
+		<link
+			rel="preload"
+			href="/fonts.css"
+			as="style"
+			onload="this.onload=null;this.rel='stylesheet'"
+		/>
+		<noscript><link rel="stylesheet" href="/fonts.css" /></noscript>
 		<script>
 			(function () {
 				try {
-					var path = location.pathname || '';
-					var q = location.search || '';
-					var light =
-						path.indexOf('/analytics') === 0 || q.indexOf('preview=1') !== -1;
-					if (!light) {
-						var f1 = document.createElement('link');
-						f1.rel = 'preload';
-						f1.as = 'font';
-						f1.type = 'font/woff2';
-						f1.href = '/fonts/big-shoulders-display-latin-900-normal.woff2';
-						f1.crossOrigin = 'anonymous';
-						document.head.appendChild(f1);
-						var f2 = document.createElement('link');
-						f2.rel = 'preload';
-						f2.as = 'font';
-						f2.type = 'font/woff2';
-						f2.href = '/fonts/fraunces-latin-300-normal.woff2';
-						f2.crossOrigin = 'anonymous';
-						document.head.appendChild(f2);
-						var la = document.createElement('link');
-						la.rel = 'preload';
-						la.as = 'image';
-						la.type = 'image/avif';
-						la.fetchPriority = 'high';
-						la.imageSrcset =
-							'/images/hero-band-sm.avif 720w, /images/hero-band-md.avif 1100w, /images/hero-band.avif 1400w';
-						la.imageSizes = '(min-width: 768px) 50vw, 100vw';
-						document.head.appendChild(la);
-						var l1 = document.createElement('link');
-						l1.rel = 'preload';
-						l1.as = 'image';
-						l1.type = 'image/webp';
-						l1.fetchPriority = 'high';
-						l1.imageSrcset =
-							'/images/hero-band-sm.webp 720w, /images/hero-band-md.webp 1100w, /images/hero-band.webp 1400w';
-						l1.imageSizes = '(min-width: 768px) 50vw, 100vw';
-						document.head.appendChild(l1);
-						var l2 = document.createElement('link');
-						l2.rel = 'preload';
-						l2.as = 'image';
-						l2.href = '/images/logo.webp';
-						l2.type = 'image/webp';
-						document.head.appendChild(l2);
-					}
+					var f1 = document.createElement('link');
+					f1.rel = 'preload';
+					f1.as = 'font';
+					f1.type = 'font/woff2';
+					f1.href = '/fonts/big-shoulders-display-latin-900-normal.woff2';
+					f1.crossOrigin = 'anonymous';
+					document.head.appendChild(f1);
+					var f2 = document.createElement('link');
+					f2.rel = 'preload';
+					f2.as = 'font';
+					f2.type = 'font/woff2';
+					f2.href = '/fonts/fraunces-latin-300-normal.woff2';
+					f2.crossOrigin = 'anonymous';
+					document.head.appendChild(f2);
+					/* Preload only AVIF — dual preload would download both formats */
+					var la = document.createElement('link');
+					la.rel = 'preload';
+					la.as = 'image';
+					la.type = 'image/avif';
+					la.fetchPriority = 'high';
+					la.imageSrcset =
+						'/images/hero-band-sm.avif 720w, /images/hero-band-md.avif 1100w, /images/hero-band.avif 1400w';
+					la.imageSizes = '(min-width: 768px) 50vw, 100vw';
+					document.head.appendChild(la);
+					var l2 = document.createElement('link');
+					l2.rel = 'preload';
+					l2.as = 'image';
+					l2.href = '/images/logo.webp';
+					l2.type = 'image/webp';
+					document.head.appendChild(l2);
 				} catch (e) {}
 			})();
 		</script>

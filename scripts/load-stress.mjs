@@ -25,7 +25,6 @@ const PATHS = [
 	'/rezervacie',
 	'/kontakt',
 	'/rezervacne-podmienky',
-	'/analytics',
 	'/images/hero-band.webp',
 	'/images/logo.webp'
 ];
