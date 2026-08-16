@@ -16,9 +16,14 @@
 			: 'Niečo sa pokazilo na našej strane. Skúste to znova o chvíľu — alebo nám zavolajte.'
 	);
 	const stamp = $derived(is404 ? 'Mimo set' : 'Technika');
+	const description = $derived(
+		is404
+			? 'Stránka sa nenašla. Vráťte sa na úvod SEBA BAND, alebo rezervujte termín kapely na svadbu, ples či oslavu.'
+			: 'Dočasná chyba na stránke SEBA BAND. Skúste to znova, alebo nás kontaktujte kvôli rezervácii kapely.'
+	);
 </script>
 
-<Seo {title} noindex />
+<Seo {title} {description} noindex />
 
 <section class="error-sheet relative overflow-x-clip px-4 pt-28 pb-20 md:px-7 md:pt-36 md:pb-28">
 	<div class="error-mesh" aria-hidden="true"></div>

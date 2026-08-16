@@ -21,7 +21,7 @@
 		imageAlt?: string;
 	} = $props();
 
-	const desc = $derived(description ?? site.description);
+	const desc = $derived((description ?? site.description).trim());
 	const keys = $derived(keywords ?? seo.keywords);
 	const canonical = $derived(new URL(page.url.pathname, site.url).href);
 	const absoluteImage = $derived(
@@ -40,9 +40,11 @@
 	<meta name="category" content="music,entertainment,wedding" />
 	<meta name="geo.region" content="SK" />
 	<meta name="geo.placename" content="Slovensko" />
-	<meta name="language" content="Slovak" />
+	<meta name="language" content="sk" />
+	<meta http-equiv="content-language" content="sk" />
 	<link rel="canonical" href={canonical} />
 	<link rel="alternate" hreflang="sk" href={canonical} />
+	<link rel="alternate" hreflang="sk-SK" href={canonical} />
 	<link rel="alternate" hreflang="x-default" href={canonical} />
 
 	{#if noindex}
