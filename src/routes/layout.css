@@ -354,7 +354,7 @@ html.lb-open .btn-hot.fixed {
 }
 
 [data-theme='dark'] .cta-band-scrim {
-	background-color: color-mix(in srgb, var(--color-paprika-deep) 82%, #0a0806);
+	background-color: color-mix(in srgb, var(--color-paprika-deep) 82%, transparent);
 }
 
 [data-theme='dark'] footer.bg-pine,
